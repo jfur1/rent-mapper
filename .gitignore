@@ -6,6 +6,7 @@
 .pnp.js
 /utils/market_data.json
 /utils/geoJSON_market_data.json
+/public/yelp_dataset
 
 # testing
 /coverage
