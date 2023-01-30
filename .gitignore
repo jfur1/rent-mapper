@@ -4,7 +4,8 @@
 /node_modules
 /.pnp
 .pnp.js
-/public/market_data.json
+/utils/market_data.json
+/utils/geoJSON_market_data.json
 
 # testing
 /coverage

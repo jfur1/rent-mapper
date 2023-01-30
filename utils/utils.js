@@ -1,5 +1,4 @@
 // Utility Functions for Map
-import MarketData from '../public/market_data.json'
 
 // Degrees to radians
 export const deg2rad = (degrees) => {
@@ -51,11 +50,4 @@ export const boundingBox = (longitudeInDegrees, latitudeInDegrees, halfSideInKm)
 
 export const randomIntFromInterval = (min, max) => { // min and max included 
     return Math.floor(Math.random() * (max - min + 1) + min)
-}
-
-
-export const getNumberOfEntriesFromCO = () => {
-    var entries = MarketData.map(el => el.State === "CO")
-
-    console.log(entries.length)
 }

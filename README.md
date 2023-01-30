@@ -6,4 +6,5 @@
 - Rental Market Rate Data: https://www.zillow.com/research/data/
 - Mapbox API: https://www.mapbox.com/
 - Turf.js API: https://turfjs.org/docs/#hexGrid
+- ZipCodes --> Coordinates via https://dash.geocod.io/
 
