@@ -51,3 +51,18 @@ export const boundingBox = (longitudeInDegrees, latitudeInDegrees, halfSideInKm)
 export const randomIntFromInterval = (min, max) => { // min and max included 
     return Math.floor(Math.random() * (max - min + 1) + min)
 }
+
+/* Generate a random string with 32 characters.
+
+    Session Token is a user-generated token to identify a session for billing purposes. 
+    Learn more about session tokens.
+    https://docs.foursquare.com/reference/session-tokens
+*/
+export const generateRandomSessionToken = (length = 32) => {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    for (let i = 0; i < length; i++) {
+      result += characters[Math.floor(Math.random() * characters.length)];
+    }
+    return result;
+}
