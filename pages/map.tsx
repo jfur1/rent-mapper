@@ -489,6 +489,21 @@ const Map : NextPage = () => {
             });
           }
         }
+      });
+      const zoomThreshold = 14.5;
+      // If we zoom in more than Nx, then hide grid-extrusion layer
+      map.current.on('zoom', () => {
+        if (map.current.getZoom() > zoomThreshold) {
+          map.current.setLayoutProperty('grid-extrusion', 'visibility', 'none');
+        } 
+        // Zoomed out, but still have a hexagon selected
+        else {
+          map.current.setLayoutProperty(
+            'grid-extrusion',
+            'visibility',
+            'visible'
+          );
+        }
       })
   
       // Listen for the `result` event from the Geocoder // `result` event is triggered when a user makes a selection
@@ -497,6 +512,7 @@ const Map : NextPage = () => {
         // console.log(result);
         console.log('New Location! Setting center: ', result.center[0], result.center[1])
         setCenter([result.center[0], result.center[1]]);
+
       });
 }
   // useEffect(() => {
