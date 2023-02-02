@@ -183,8 +183,8 @@ const Map : NextPage = () => {
 
 
       // Initialize hexGrid
-      var bbox = boundingBox(center[0], center[1], 10);
-      const cellSide = 0.2;
+      var bbox = boundingBox(center[0], center[1], 3);
+      const cellSide = 0.16;
       const options = {};
       const hexGrid = turf.hexGrid(bbox, cellSide, options);
       // console.log(hexGrid);
@@ -208,10 +208,17 @@ const Map : NextPage = () => {
       var max_pts = 0;
       var emptyHexBins = []
       var nonEmptyHexBins = []
-
+      // Get point data (if any) that resides within the current polygon
       hexGrid.features.forEach((f, idx) => {
-  
+        // Check for base case before any computation
         var pointsWithin = turf.pointsWithinPolygon(turfPoints, f)
+        const nPointsWithin = pointsWithin.features.length;
+        if(!nPointsWithin){
+          console.log('skipping')
+          return
+        }
+
+        else{
         var pointsWithin1 = turf.pointsWithinPolygon(turfPoints1, f)
         var pointsWithin2 = turf.pointsWithinPolygon(turfPoints2, f)
         var pointsWithin3 = turf.pointsWithinPolygon(turfPoints3, f)
@@ -228,9 +235,11 @@ const Map : NextPage = () => {
         if(nPointsWithin > 0 && nPointsWithin > max_pts)
           max_pts = nPointsWithin;
   
-        if(nPointsWithin){
+        
           // console.log('N Points within Polyon:', nPointsWithin)
-          const avgPriceWithinFeature = ((nPointsWithin1) + (2 * nPointsWithin2) + (3 * nPointsWithin3) + (4 * nPointsWithin4)) / nPointsWithin;
+          var avgPriceWithinFeature = ((nPointsWithin1) + (2 * nPointsWithin2) + (3 * nPointsWithin3) + (4 * nPointsWithin4)) / nPointsWithin;
+          avgPriceWithinFeature = parseFloat(parseFloat(avgPriceWithinFeature).toFixed(2))
+
           // Get color based on rgb(238, 83, 83) main color
           const r = (137 * (avgPriceWithinFeature * 25)) / 100
           const g = (245 * (avgPriceWithinFeature * 25)) / 100
@@ -246,17 +255,11 @@ const Map : NextPage = () => {
             y: center_y,
             coordinates: f.geometry.coordinates,
             avgPriceWithinFeature: avgPriceWithinFeature, 
+            nPointsWithin: nPointsWithin,
             height: avgPriceWithinFeature * 1000,
             color: `rgb(${r}, ${g}, ${b})`
           };        
           nonEmptyHexBins.push(f)
-        } else {
-          f.properties = { 
-            id: idx,
-            height: 0,
-            color: 'transparent'
-          };
-          emptyHexBins.push(f)
         }
       });
 
@@ -419,9 +422,10 @@ const Map : NextPage = () => {
               map.current.getCanvas().style.cursor = 'pointer';
               const height = e.features[0].properties.height;
               const avgPriceWithinFeature = e.features[0].properties.avgPriceWithinFeature;
+              const nPointsWithin = e.features[0].properties.nPointsWithin
               const id = e.features[0].id;
               hoveredStateId = e.features[0].id;
-              const text = `<div><p>Average Cost:</p><p>$ ${avgPriceWithinFeature}/4 $</p></div>`
+              const text = `<div><p>Average Cost:</p><p>$ ${avgPriceWithinFeature} / 4 $</p><p>nPointsWithin : ${nPointsWithin}</p></div>`
               
               map.current.setFeatureState({
                 source: 'grid-extrusion',
