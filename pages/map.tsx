@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import Head from 'next/head'
-import styles from '../styles/Map.module.css'
+import styles from '../styles/Map.module.scss'
 import type { NextPage } from 'next';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -14,6 +14,7 @@ import {
 import MapboxGeocoder from 'mapbox-gl-geocoder'
 import * as turf from '@turf/turf';
 import MarketData from '../utils/geoJSON_market_data.json'
+import LoadingSpinner from '../components/Loading.tsx'
 
 const Map : NextPage = () => {
   const mapContainer = useRef<any>(null);
@@ -205,6 +206,9 @@ const Map : NextPage = () => {
   
       // console.log(turfPoints)
       var max_pts = 0;
+      var emptyHexBins = []
+      var nonEmptyHexBins = []
+
       hexGrid.features.forEach((f, idx) => {
   
         var pointsWithin = turf.pointsWithinPolygon(turfPoints, f)
@@ -245,30 +249,21 @@ const Map : NextPage = () => {
             height: avgPriceWithinFeature * 1000,
             color: `rgb(${r}, ${g}, ${b})`
           };        
+          nonEmptyHexBins.push(f)
         } else {
           f.properties = { 
             id: idx,
             height: 0,
-            color: 'rgba(0,0,0,0)'
+            color: 'transparent'
           };
+          emptyHexBins.push(f)
         }
       });
 
-  
-      map.current.on('load', async () => {
-
-        // // When map gets loaded, make sure grid extrustion layer is not hidden
-        // if(map.current.getLayer('grid-extrusion')){
-        //   const visibility = map.current.getLayoutProperty('grid-extrusion', 'visibility');
-        //   if (visibility === 'visible') {
-        //     setZoomed(true)
-        //   } else {
-        //     setZoomed(false)
-        //   }
-        // } else {
-        //   setZoomed(false)
-        // }
-  
+      // console.log("HEX BINS WITH NO DATA: ", emptyHexBins)
+      // console.log("HEX BINS WITH WITH DATA: ", nonEmptyHexBins)
+      
+      map.current.on('load', async () => {  
         const { lng, lat } = map.current.getCenter();
         // Plot geoJSON points from market_data
         map.current.addLayer({
@@ -361,7 +356,10 @@ const Map : NextPage = () => {
             'type': 'fill-extrusion',
             'source': {
               'type': 'geojson',
-              'data': hexGrid
+              'data': {
+                "type": "FeatureCollection",
+                "features": nonEmptyHexBins
+              }
             },
             'layout': {
               // Make the layer visible by default.
@@ -405,8 +403,9 @@ const Map : NextPage = () => {
               .addTo(map.current);
         })
           
-        map.current.on('mouseleave', ['businesses-layer-1', 'businesses-layer-2','businesses-layer-3','businesses-layer-4',], (e) => {
+        map.current.on('mouseleave', ['grid-extrusion', 'businesses-layer-1', 'businesses-layer-2','businesses-layer-3','businesses-layer-4',], (e) => {
           map.current.getCanvas().style.cursor = '';
+          map.current.removeFeatureState({ source: 'grid-extrusion' });
           popup.remove();
           hoveredStateId = null;
         })
@@ -436,27 +435,32 @@ const Map : NextPage = () => {
             }
           } 
         }); 
+
         
 
-        const zoomThreshold = 14;
+        const zoomThreshold = 14.25;
         let hexagonSelected = false;
         const layoutLoaded = map.current.getLayoutProperty('grid-extrusion', 'visibility')
         // If we zoom in more than Nx, then hide grid-extrusion layer
         map.current.on('zoom', () => {
-          if (map.current.getZoom() > zoomThreshold) {
-            console.log('HIDING EXTRUSIONS')
+          if (map.current.getZoom() > zoomThreshold ) {
+            // console.log('HIDING EXTRUSIONS', map.current.getSource('selected-area'))
             map.current.setLayoutProperty('grid-extrusion', 'visibility', 'none');
           } 
           // User zooms out -- only set visible if the user is also NOT focused on selected hexagon
-          else if (map.current.getZoom() <= zoomThreshold && hexagonSelected === false) {
-            console.log('UNHIDE EXTRUSIONS', hexagonSelected)
-              map.current.setLayoutProperty('grid-extrusion', 'visibility', 'visible');
+          else if (map.current.getZoom() <= zoomThreshold && typeof(map.current.getSource('selected-area')) === 'undefined' ) {
+            // console.log('UNHIDE EXTRUSIONS', map.current.getSource('selected-area'))
+            map.current.setLayoutProperty('grid-extrusion', 'visibility', 'visible');
+          } else {
+            map.current.setLayoutProperty('grid-extrusion', 'visibility', 'none');
           }
         })
+
         map.current.on('click', 'grid-extrusion', (e) => {
           if(e.features.length > 0){
             if(e.features[0].properties.height > 0){
               hexagonSelected = true;
+              console.log('%c setting zoom TRUE ', 'background: #222, color: red')
               setZoomed(true)
               console.log('Clicked on polygon:', e.features[0].id)
               console.log('Clicked on polygon:', e.features[0].geometry.coordinates)
@@ -492,7 +496,7 @@ const Map : NextPage = () => {
                 }) 
               }
 
-              if(!map.current.getSource('selected-hexagon')){
+              if(!map.current.getLayer('selected-hexagon')){
                 // Style the selected hexagon
                 map.current.addLayer({
                   'id': 'selected-hexagon',
@@ -533,31 +537,42 @@ const Map : NextPage = () => {
                       //respect to prefers-reduced-motion
     });
     setZoomed(false);
-    // const selectedHexLayer = map.current.getLayer('selected-hexagon');
-    // const selectedAreaSrc = map.current.getSource('selected-area');
-    // if(typeof(selectedAreaSrc) !== 'undefined')
-    //   map.current.removeSource('selected-area');
-    // if(typeof(selectedHexLayer) !== 'undefined')
-    //   map.current.removeLayer('selected-hexagon');
-    map.current.removeLayer('selected-hexagon');
-    map.current.removeSource('selected-area');
+
+    if(typeof(map.current.getLayer('selected-hexagon')) !== 'undefined')
+      map.current.removeLayer('selected-hexagon');
+
+    if(typeof(map.current.getSource('selected-area')) !== 'undefined')
+      map.current.removeSource('selected-area');
+      
     map.current.setLayoutProperty('grid-extrusion', 'visibility', 'visible');
   }
 
   return (
     <main className={styles["container"]}>
-      <div className={styles["menu-container"]}>
-        <h1 className={styles["title"]}>Rent Prices in Denver</h1>
-        <p className={styles["description"]}>
-          {`What parts of Denver have the highest rent prices? Data source: `}
-          <a href='https://www.zillow.com/research/data/' target='blank' rel='norefferer'>{`Zillow`}</a>
-        </p>
-      </div>
-      <div className={styles["map-container"]} ref={mapContainer}/>
-      <button onClick={backToOverview} className={styles["zoomOut"]} style={ 
-        zoomed ? { visibility: 'visible'} : null
-      }>Back to Overview</button>
-      <div className={styles["help"]}>Right click and drag to rotate</div>
+      
+      {loading ? <LoadingSpinner/>
+      : 
+      <>
+        <div className={styles["menu-container"]}>
+          <h1 className={styles["title"]}>Rent Prices in Denver</h1>
+          <p className={styles["description"]}>
+            {`What parts of Denver have the highest rent prices? Data source: `}
+            <a href='https://www.zillow.com/research/data/' target='blank' rel='norefferer'>{`Zillow`}</a>
+          </p>
+        </div>
+        
+        <div className={styles["map-container"]} ref={mapContainer}/>
+        <button 
+          onClick={backToOverview} 
+          className={styles["zoomOut"]} 
+          style={ 
+            zoomed ? { visibility: 'visible'} : null
+          }>
+            Back to Overview
+          </button>
+          <div className={styles["help"]}>Right click and drag to rotate</div>
+        </>
+      }
     </main>
   )
 }

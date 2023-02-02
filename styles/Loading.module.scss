@@ -1,0 +1,101 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Poppins:wght@300;400;500&display=swap');
+
+.body {
+        background-color: #fff;
+    }
+  .spinner {
+    border: 1px solid transparent;
+    border-bottom-color: #aaa;
+    border-right-color: #aaa;
+    width: 125px;
+    height: 125px;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    animation: load 2s linear infinite;
+  }
+  @keyframes load {
+    from {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+  
+  .title{
+    // border: 1px solid red;
+    font-size: clamp(50px, 60px, 70px);
+    position: absolute;
+    width: 12%;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-family: 'Amatic SC', cursive;
+
+    &:after {
+        overflow: hidden;
+        display: inline-block;
+        vertical-align: bottom;
+        -webkit-animation: ellipsis steps(4, end) 1200ms infinite;
+        animation: ellipsis steps(4, end) 1200ms infinite;
+        content: "\2026";
+        /* ascii code for the ellipsis character */
+        width: 0px;
+      }
+      @keyframes ellipsis {
+        to {
+          width: 40px;
+        }
+      }
+      
+      @-webkit-keyframes ellipsis {
+        to {
+          width: 40px;
+        }
+      }
+  }
+
+  .edge {
+    background-color: #fff;
+    box-shadow: inset 0px 0px 20px #eee;
+    width: 125px;
+    height: 125px;
+    position: absolute;
+    border-radius: 50%;
+    overflow: hidden;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    svg {
+        position: absolute;
+        fill-opacity: 0;
+        stroke: #aaa;
+        stroke-opacity: 1;
+        stroke-width: 2;
+        stroke-dasharray: 670px;
+        animation: draw 5s infinite ease-in-out alternate,
+                   rotate 5s -2.5s infinite ease-in-out reverse;
+      
+      }
+  }
+  
+  @keyframes draw {
+    0% {
+      stroke-dashoffset: 670px;
+    }
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes rotate {
+    from {
+      left: -265px;
+    }
+    to {
+      left: 0px;
+    }
+  }
