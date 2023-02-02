@@ -1,4 +1,5 @@
 // Utility Functions for Map
+import * as turf from '@turf/turf';
 
 // Degrees to radians
 export const deg2rad = (degrees) => {
@@ -65,4 +66,51 @@ export const generateRandomSessionToken = (length = 32) => {
       result += characters[Math.floor(Math.random() * characters.length)];
     }
     return result;
+}
+
+// Takes json response from API and converts to geojson standard
+export const jsonToGeoJson = (data, score) => {
+    var geojson = {
+        'type': 'FeatureCollection',
+        "features": []
+    }
+
+    if(typeof(data) === 'undefined'){
+        console.log('No data to convert. Returning tempalte.');
+        return geojson;
+    }
+
+    for(var i = 0; i < data.length ; i++){
+        var point = {
+            "type": "Feature",
+            "id": 'business',
+            "geometry" :{
+                "type": "Point",
+                "coordinates" : [
+                    data[i].geocodes.main.longitude,
+                    data[i].geocodes.main.latitude
+                ]
+            },
+            "properties" : {
+                "fsq_id" : data[i].fsq_id,
+                "name" : data[i].name,
+                "location" : data[i].location,
+                "score" : score
+            }
+        }
+        geojson.features.push(point);
+    }
+
+    return geojson;
+}
+
+// Converts a geojson object to an array of turf points
+export const geoJsonToPoints = (geojson) => {
+    var points = []
+
+    for(var i=0; i < geojson.features.length; i++){
+        points.push(geojson.features[i].geometry.coordinates)
+    }
+
+    return turf.points(points)
 }

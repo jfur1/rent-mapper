@@ -37,3 +37,30 @@ main.container{
     font-size: medium;
     z-index: 5;
 }
+
+.popup{
+    max-width: 400px;
+    color:rgb(39, 39, 39);
+    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+.zoomOut{
+    position: absolute;
+    left: 20vw;
+    top: 4rem;
+    margin-left: 10px;
+    background-color: rgba(17, 17, 17, 0.236);
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    font-size: medium;
+    z-index: 5;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    visibility: hidden;
+}
+
+.zoomOut:hover{
+    background-color: #555;
+    cursor: pointer;
+}
