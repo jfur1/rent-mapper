@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Poppins:wght@300;400;500&display=swap');
+
 main.container{
     display: flex;
 }
@@ -42,6 +44,94 @@ main.container{
     max-width: 400px;
     color:rgb(39, 39, 39);
     font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+.legend{
+
+    .circle{
+        border: 3px solid #ddd;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+    }
+
+    .chart-container{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-top: 1px solid #aaa;
+        border-bottom: 1px solid #aaa;
+        padding: 6px 0 0 0;
+    }
+    .chart-title{
+        text-align: center;
+        font-family: 'Poppins', Arial, Helvetica, sans-serif;
+        font-weight: 400;
+        font-size: medium;
+        letter-spacing: 1.5px;
+    }
+    .small-bar-chart {
+        display: table;
+        table-layout: fixed;
+        justify-content: center;
+        width: 100%;
+        max-width: 200px;
+        max-height: 120px;
+        margin: 0px auto 0px;
+        // border: 1px solid #ddd;
+      
+       .small-bar-chart-bar-container {
+            display: table-cell;
+            vertical-align: bottom;
+            margin-bottom: 4px;
+            height: 100px;
+            width: 40px;
+
+            #small-bar-chart-bar- {
+                &1{background: red;}
+                &2{background: blue;}
+                &3{background: green;}
+                &4{background: orange;}
+            }
+            .small-bar-chart-bar {
+                margin: 0 2px 2px;
+                display: block;
+                background: #484849;
+                border-radius: 8px;
+            }
+        }
+    }
+
+    .bar-chart-label{
+        // border: 1px solid #ddd;
+        display: flex;
+        margin: 10px auto;
+        padding: 0 5px 0 10px;
+        max-width: 200px;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+
+        .metric-left{
+            font-size: 16px;
+            font-family: 'Poppins';
+            flex-grow: 1;
+            flex-basis: 0;
+        }
+        .metric-right{
+            font-size: 16px;
+            font-family: 'Poppins';
+            text-align: right;
+            flex-grow: 1;
+            flex-basis: 0;
+        }
+        .label-text{
+            font-size: 18px;
+            text-align: center;
+            font-family: 'Poppins';
+            font-weight: 300;
+        }
+    }
 }
 
 .zoomOut{

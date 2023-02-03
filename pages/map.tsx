@@ -34,6 +34,7 @@ const Map : NextPage = () => {
   const [businesses3, setBusinesses3] = useState(geoJsonStructure);
   const [businesses4, setBusinesses4] = useState(geoJsonStructure);
   const [center, setCenter] = useState([INIT_X, INIT_Y]);
+  const [place, setPlace] = useState("Denver, Colorado");
   
   const getData = async() => {
     try {
@@ -101,7 +102,6 @@ const Map : NextPage = () => {
 
       console.log(`API Returned ${json1.results.length + json2.results.length + json3.results.length + json4.results.length} total results`)
       console.log('%c Finished fetching data!\n', 'background: #111; color: #bada55')
-
       return;
     } catch (error) {
       throw error;
@@ -174,7 +174,8 @@ const Map : NextPage = () => {
       // Listen for the `result` event from the Geocoder // `result` event is triggered when a user makes a selection
       //  Add a marker at the result's coordinates
       geocoder.on('result', ({ result }) => {
-        // console.log(result);
+        console.log('geocoder result', result);
+        setPlace(result.place_name)
         console.log('New Location! Setting center: ', result.center[0], result.center[1])
         setCenter([result.center[0], result.center[1]]);
       });
@@ -214,53 +215,51 @@ const Map : NextPage = () => {
         var pointsWithin = turf.pointsWithinPolygon(turfPoints, f)
         const nPointsWithin = pointsWithin.features.length;
         if(!nPointsWithin){
-          console.log('skipping')
-          return
-        }
+          // console.log('skipping')
+          return;
+        } else{
+          var pointsWithin1 = turf.pointsWithinPolygon(turfPoints1, f)
+          var pointsWithin2 = turf.pointsWithinPolygon(turfPoints2, f)
+          var pointsWithin3 = turf.pointsWithinPolygon(turfPoints3, f)
+          var pointsWithin4 = turf.pointsWithinPolygon(turfPoints4, f)
+    
+          const nPointsWithin = pointsWithin.features.length;
+          const nPointsWithin1 = pointsWithin1.features.length;
+          const nPointsWithin2 = pointsWithin2.features.length;
+          const nPointsWithin3 = pointsWithin3.features.length;
+          const nPointsWithin4 = pointsWithin4.features.length;
+    
+          // console.log('Point Counts: ', nPointsWithin, nPointsWithin1, nPointsWithin2, nPointsWithin3, nPointsWithin4)
+          
+          if(nPointsWithin > 0 && nPointsWithin > max_pts)
+            max_pts = nPointsWithin;
+    
+          
+            // console.log('N Points within Polyon:', nPointsWithin)
+            var avgPriceWithinFeature = ((nPointsWithin1) + (2 * nPointsWithin2) + (3 * nPointsWithin3) + (4 * nPointsWithin4)) / nPointsWithin;
+            avgPriceWithinFeature = parseFloat(parseFloat(avgPriceWithinFeature).toFixed(2))
 
-        else{
-        var pointsWithin1 = turf.pointsWithinPolygon(turfPoints1, f)
-        var pointsWithin2 = turf.pointsWithinPolygon(turfPoints2, f)
-        var pointsWithin3 = turf.pointsWithinPolygon(turfPoints3, f)
-        var pointsWithin4 = turf.pointsWithinPolygon(turfPoints4, f)
-  
-        const nPointsWithin = pointsWithin.features.length;
-        const nPointsWithin1 = pointsWithin1.features.length;
-        const nPointsWithin2 = pointsWithin2.features.length;
-        const nPointsWithin3 = pointsWithin3.features.length;
-        const nPointsWithin4 = pointsWithin4.features.length;
-  
-        // console.log('Point Counts: ', nPointsWithin, nPointsWithin1, nPointsWithin2, nPointsWithin3, nPointsWithin4)
-        
-        if(nPointsWithin > 0 && nPointsWithin > max_pts)
-          max_pts = nPointsWithin;
-  
-        
-          // console.log('N Points within Polyon:', nPointsWithin)
-          var avgPriceWithinFeature = ((nPointsWithin1) + (2 * nPointsWithin2) + (3 * nPointsWithin3) + (4 * nPointsWithin4)) / nPointsWithin;
-          avgPriceWithinFeature = parseFloat(parseFloat(avgPriceWithinFeature).toFixed(2))
-
-          // Get color based on rgb(238, 83, 83) main color
-          const r = (137 * (avgPriceWithinFeature * 25)) / 100
-          const g = (245 * (avgPriceWithinFeature * 25)) / 100
-          const b = (118 * (avgPriceWithinFeature * 25)) / 100
-  
-          // console.log(f.geometry.coordinates[0][0])
-          f.id = idx;
-          const center_x = (f.geometry.coordinates[0][0][0] + f.geometry.coordinates[0][3][0]) / 2
-          const center_y =(f.geometry.coordinates[0][0][1] + f.geometry.coordinates[0][3][1]) / 2
-  
-          f.properties = { 
-            x: center_x,
-            y: center_y,
-            coordinates: f.geometry.coordinates,
-            avgPriceWithinFeature: avgPriceWithinFeature, 
-            nPointsWithin: nPointsWithin,
-            height: avgPriceWithinFeature * 1000,
-            color: `rgb(${r}, ${g}, ${b})`
-          };        
-          nonEmptyHexBins.push(f)
-        }
+            // Get color based on rgb(238, 83, 83) main color
+            const r = (137 * (avgPriceWithinFeature * 25)) / 100
+            const g = (245 * (avgPriceWithinFeature * 25)) / 100
+            const b = (118 * (avgPriceWithinFeature * 25)) / 100
+    
+            // console.log(f.geometry.coordinates[0][0])
+            f.id = idx;
+            const center_x = (f.geometry.coordinates[0][0][0] + f.geometry.coordinates[0][3][0]) / 2
+            const center_y =(f.geometry.coordinates[0][0][1] + f.geometry.coordinates[0][3][1]) / 2
+    
+            f.properties = { 
+              x: center_x,
+              y: center_y,
+              coordinates: f.geometry.coordinates,
+              avgPriceWithinFeature: avgPriceWithinFeature, 
+              nPointsWithin: nPointsWithin,
+              height: avgPriceWithinFeature * 1000,
+              color: `rgb(${r}, ${g}, ${b})`
+            };        
+            nonEmptyHexBins.push(f)
+          }
       });
 
       // console.log("HEX BINS WITH NO DATA: ", emptyHexBins)
@@ -418,7 +417,7 @@ const Map : NextPage = () => {
           if(e.features.length > 0){
             if(e.features[0].properties.height > 0 && e.features[0].layer.id === 'grid-extrusion'){
               // const features = map.current.queryRenderedFeatures(e.point);
-              console.log(e.features[0])
+              // console.log(e.features[0])
               map.current.getCanvas().style.cursor = 'pointer';
               const height = e.features[0].properties.height;
               const avgPriceWithinFeature = e.features[0].properties.avgPriceWithinFeature;
@@ -442,7 +441,7 @@ const Map : NextPage = () => {
 
         
 
-        const zoomThreshold = 14.25;
+        const zoomThreshold = 14;
         let hexagonSelected = false;
         const layoutLoaded = map.current.getLayoutProperty('grid-extrusion', 'visibility')
         // If we zoom in more than Nx, then hide grid-extrusion layer
@@ -471,7 +470,7 @@ const Map : NextPage = () => {
               console.log('Clicked on polygon:', e.features[0])
               const target = {
                 center: [e.features[0].properties.x, e.features[0].properties.y],
-                zoom: 15,
+                zoom: 16,
                 bearing: 45,
                 pitch: 0
               };
@@ -556,14 +555,56 @@ const Map : NextPage = () => {
       
       {loading ? <LoadingSpinner/>
       : 
-      <>
+        <>
         <div className={styles["menu-container"]}>
-          <h1 className={styles["title"]}>Rent Prices in Denver</h1>
+          <h2 className={styles["title"]}>{`Where to Eat in ${place}`}</h2>
           <p className={styles["description"]}>
-            {`What parts of Denver have the highest rent prices? Data source: `}
-            <a href='https://www.zillow.com/research/data/' target='blank' rel='norefferer'>{`Zillow`}</a>
+            {`What parts of ${place} have the priciest menus? Data source: `}
+            <a href='https://location.foursquare.com/developer/reference/place-search' target='blank' rel='norefferer'>{`Foursquare`}</a>
           </p>
-        </div>
+
+          <div className={styles["legend"]}>
+
+            <div className={styles["chart-container"]}>
+              <h3 className={styles["chart-title"]}>LEGEND</h3>
+              <div className={styles["small-bar-chart"]}>
+                  <div className={styles["small-bar-chart-bar-container"]}>
+                      <div 
+                      className={styles["small-bar-chart-bar"]}
+                      id={styles['small-bar-chart-bar-1']}
+                      style={{'height': '25%'}}
+                      />
+                  </div>
+                  <div className={styles["small-bar-chart-bar-container"]}>
+                      <div 
+                      className={styles["small-bar-chart-bar"]}
+                      id={styles['small-bar-chart-bar-2']}
+                      style={{'height': '45%'}}
+                      />
+                  </div>
+                  <div className={styles["small-bar-chart-bar-container"]}>
+                      <div 
+                      className={styles["small-bar-chart-bar"]}
+                      id={styles['small-bar-chart-bar-3']}
+                      style={{'height': '60%'}}
+                      />
+                  </div>
+                  <div className={styles["small-bar-chart-bar-container"]}>
+                      <div 
+                      className={styles["small-bar-chart-bar"]}
+                      id={styles['small-bar-chart-bar-4']}
+                      style={{"height": '80%'}}
+                      />
+                  </div>
+                </div>
+                <div className={styles["bar-chart-label"]}>
+                  <p className={styles['metric-left']}>$</p>
+                  <h4 className={styles["label-text"]}>{`Price`}</h4>
+                  <p className={styles['metric-right']}>$$$$</p>
+                </div>
+              </div>
+            </div>
+          </div>
         
         <div className={styles["map-container"]} ref={mapContainer}/>
         <button 
