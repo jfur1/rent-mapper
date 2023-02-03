@@ -46,4 +46,89 @@ const test = () => {
   )
 }
 
+// map.current.addLayer({
+//     'id': 'businesses-layer-1',
+//     'type': 'circle',
+//     'source': {
+//         'type': 'geojson',
+//         'data': businesses
+//     },
+//     'layout': {},
+//     'paint': {
+//       'circle-radius': 4,
+//       'circle-stroke-width': 2,
+//       'circle-color': 'red',
+//       'circle-stroke-color': 'white',
+//       'circle-stroke-opacity': {
+//         stops: [[12.5, 0], [15, 1]]
+//       },
+//       'circle-opacity': {
+//         stops: [[12.5, 0], [15, 1]]
+//       }
+//     }
+//   });
+//   map.current.addLayer({
+//     'id': 'businesses-layer-2',
+//     'type': 'circle',
+//     'source': {
+//         'type': 'geojson',
+//         'data': businesses2
+//     },
+//     'layout': {},
+//     'paint': {
+//       'circle-radius': 4,
+//       'circle-stroke-width': 2,
+//       'circle-color': 'blue',
+//       'circle-stroke-color': 'white',
+//       'circle-stroke-opacity': {
+//         stops: [[12.5, 0], [15, 1]]
+//       },
+//       'circle-opacity': {
+//         stops: [[12.5, 0], [15, 1]]
+//       }
+//     }
+//   });
+//   map.current.addLayer({
+//     'id': 'businesses-layer-3',
+//     'type': 'circle',
+//     'source': {
+//         'type': 'geojson',
+//         'data': businesses3
+//     },
+//     'layout': {},
+//     'paint': {
+//       'circle-radius': 4,
+//       'circle-stroke-width': 2,
+//       'circle-color': 'green',
+//       'circle-stroke-color': 'white',
+//       'circle-stroke-opacity': {
+//         stops: [[12.5, 0], [15, 1]]
+//       },
+//       'circle-opacity': {
+//         stops: [[12.5, 0], [15, 1]]
+//       }
+//     }
+//   });
+//   map.current.addLayer({
+//       'id': 'businesses-layer-4',
+//       'type': 'circle',
+//       'source': {
+//           'type': 'geojson',
+//           'data': businesses4
+//       },
+//       'layout': {},
+//       'paint': {
+//         'circle-radius': 4,
+//         'circle-stroke-width': 2,
+//         'circle-color': 'orange',
+//         'circle-stroke-color': 'white',
+//         'circle-stroke-opacity': {
+//           stops: [[12.5, 0], [15, 1]]
+//         },
+//         'circle-opacity': {
+//           stops: [[12.5, 0], [15, 1]]
+//         }
+//       }
+//     });
+
 export default test

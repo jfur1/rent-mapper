@@ -95,6 +95,7 @@ export const jsonToGeoJson = (data, score) => {
                 "fsq_id" : data[i].fsq_id,
                 "name" : data[i].name,
                 "location" : data[i].location,
+                "categories": data[i].categories,
                 "score" : score
             }
         }
@@ -107,10 +108,62 @@ export const jsonToGeoJson = (data, score) => {
 // Converts a geojson object to an array of turf points
 export const geoJsonToPoints = (geojson) => {
     var points = []
-
     for(var i=0; i < geojson.features.length; i++){
         points.push(geojson.features[i].geometry.coordinates)
     }
-
     return turf.points(points)
+}
+
+// Takes geoJson data for ALL businesses and returns an array of 5 FeatureCollections
+// One for each category
+export const categorizeBusinesses = (businessesGeoJson) => {
+    var points = []
+
+    var restaurantPoints = [], barPoints = [], fastFoodPoints = [], dessertsPoints = [], otherPoints = []
+
+    for(var i=0; i < businessesGeoJson.features.length; i++){
+        const categoryName=businessesGeoJson.features[i].properties.categories[0].name
+        const category = categoryName.toLowerCase()
+        // console.log(businessesGeoJson.features[i])
+        var point = {
+            "type": "Feature",
+            "id": 'business',
+            "geometry" :{
+                "type": "Point",
+                "coordinates" : businessesGeoJson.features[i].geometry.coordinates
+            },
+            "properties" : {
+                ...businessesGeoJson.features[i].properties,
+                businessType: categoryName
+            }
+        }
+
+
+        if(category.includes('bar') || category.includes('drinks') ){
+            barPoints.push(point)
+        }
+        else if(category.includes('fast food') || category.includes('pizza') || category.includes('pizzeria') || category.includes('deli')){
+            fastFoodPoints.push(point)
+        }
+        else if(category.includes('donuts') || category.includes('ice cream') || category.includes('bakery')){
+            dessertsPoints.push(point)
+        }
+        else if(category.includes('school') || category.includes('club') || category.includes('coffee')){
+            otherPoints.push(point)
+        }
+        else if(category.includes('restaurant')){
+            restaurantPoints.push(point)
+        } else {
+            otherPoints.push(point)
+
+        }
+    }
+
+    return {
+        turfPointsRestaurants : { points: restaurantPoints }, 
+        turfPointsBars : { points: barPoints },
+        turfPointsFastFood : { points: fastFoodPoints },
+        turfPointsDesserts : { points: dessertsPoints },
+        turfPointsOther : { points: otherPoints },
+    }
 }
