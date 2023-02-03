@@ -149,10 +149,11 @@ const Map : NextPage = () => {
 
   useEffect(() => {
     console.log(`%c Center updated: ${center}! Fetching updated data...`, 'background: #111; color: aliceblue')
-    
+    setSelectedTab(null)
     setLoading(true)
-    if(map.current !== null)
+    if(map.current !== null){
       map.current.remove();
+    }
 
     const update = async() => {
       await getData();
@@ -163,7 +164,7 @@ const Map : NextPage = () => {
     // showMap();
 
   }, [center])
-  
+
 
   const showMap = async() => {
       // Initialize New Map
@@ -196,7 +197,7 @@ const Map : NextPage = () => {
       });
       // Add the geocodder control to the map.
       map.current.addControl( geocoder, 'top-left');
-
+      
 
       // Initialize hexGrid
       var bbox = boundingBox(center[0], center[1], 3);
@@ -440,8 +441,7 @@ const Map : NextPage = () => {
                 stops: [[12.5, 0], [15, 1]]
               }
             }
-          });
-
+        });
         map.current.addLayer({
           'id': 'businesses-layer-restaurants',
           'type': 'circle',
@@ -731,7 +731,7 @@ const Map : NextPage = () => {
             // Make extrusions slightly opaque to see through indoor walls.
             'fill-extrusion-opacity': 0.5
           }
-      }) 
+        })
 
         // Give height to hex grid
         map.current.addLayer({
@@ -778,6 +778,7 @@ const Map : NextPage = () => {
         map.current.on('mousemove', ['businesses-layer-1', 'businesses-layer-2','businesses-layer-3','businesses-layer-4',
         'businesses-layer-restaurants' , 'businesses-layer-bars', 'businesses-layer-fast-food', 'businesses-layer-desserts', 'businesses-layer-other'], (e) => {
           console.log('MouseEnter Point: ', e.features[0])
+          console.log('MouseEnter Point: ', popup)
           // console.log('MouseEnter Point: ', e.features[0].properties.categories[0].name)
           console.log('MouseEnter Point: ', e.features[0].geometry.coordinates)
           map.current.getCanvas().style.cursor = 'pointer';
@@ -789,6 +790,9 @@ const Map : NextPage = () => {
           popup.setLngLat(e.features[0].geometry.coordinates)
               .setHTML(text)
               .addTo(map.current);
+          popup._tip.style['border-top-color']='rgb(39, 39, 39)'
+          popup._content.style.backgroundColor='rgb(39, 39, 39)'
+          popup._content.style.opacity='0.9'
         })
           
         map.current.on('mouseleave', ['grid-extrusion', 'businesses-layer-1', 'businesses-layer-2','businesses-layer-3','businesses-layer-4', , 'grid-extrusion-restaurants','grid-extrusion-bars','grid-extrusion-fast-food','grid-extrusion-desserts','grid-extrusion-other'], (e) => {
@@ -820,21 +824,40 @@ const Map : NextPage = () => {
               ||  e.features[0].layer.id === 'grid-extrusion-other'
               ){
               // const features = map.current.queryRenderedFeatures(e.point);
-              // console.log(e.features[0])
+              console.log(e.features[0])
               map.current.getCanvas().style.cursor = 'pointer';
               const height = e.features[0].properties.height;
               const avgPriceWithinFeature = e.features[0].properties.avgPriceWithinFeature;
               const nPointsWithin = e.features[0].properties.nPointsWithin
               const id = e.features[0].id;
               hoveredStateId = e.features[0].id;
-              const text = `<div><p>Average Cost:</p><p>$ ${avgPriceWithinFeature} / 4 $</p><p>nPointsWithin : ${nPointsWithin}</p></div>`
 
-                map.current.setFeatureState({
+              const HTML = `
+                <div id='${styles['container']}'>
+                  <div id='${styles['row']}'>
+                    <div id='${styles["col"]}'>
+                      <p id='${styles["average"]}'> ${avgPriceWithinFeature}  / 4 </p>
+                      <p id='${styles["desc"]}'>Average price</p>
+                    </div>
+                    <div id='${styles["col"]}'>
+                      <p id='${styles["number"]}'>${nPointsWithin}</p>
+                      <p id='${styles["desc"]}'>Businesses</p>
+                    </div>
+                  </div>
+                  <span>Click to learn more.</span>
+                </div>
+                `
+              
+              map.current.setFeatureState({
                   source: e.features[0].layer.id,
                   id: hoveredStateId
                 }, { hover: true })
   
-              popup.setLngLat(e.lngLat).setHTML(text).addTo(map.current);
+              popup.setLngLat(e.lngLat).setHTML(HTML).addTo(map.current);
+              popup._tip.style['border-top-color']='rgb(39, 39, 39)'
+              popup._content.style.backgroundColor='rgb(39, 39, 39)'
+              popup._content.style.opacity='0.9'
+
             } else {
               map.current.getCanvas().style.cursor = '';
               popup.remove();
@@ -848,26 +871,6 @@ const Map : NextPage = () => {
         let hexagonSelected = false;
         // If we zoom in more than Nx, then hide grid-extrusion layer
         map.current.on('zoom', (e) => {
-          // const restaurantGridExtrusions = map.current.getLayoutProperty('grid-extrusion-restaurants', 'visibility')
-          // const restaurantPtsLayout= map.current.getLayoutProperty('businesses-layer-restaurants', 'visibility')
-          // const barsPtsLayout = map.current.getLayoutProperty('businesses-layer-bars', 'visibility')
-          // const barsGridExtrusions = map.current.getLayoutProperty('grid-extrusion-bars', 'visibility')
-          // const fastFoodGridExtrusions = map.current.getLayoutProperty('grid-extrusion-fast-food', 'visibility')
-          // const fastFoodPtsLayout = map.current.getLayoutProperty('businesses-layer-fast-food', 'visibility')
-          // const dessertsPtsLayout = map.current.getLayoutProperty('businesses-layer-desserts', 'visibility')
-          // const dessertsGridExtrusions = map.current.getLayoutProperty('grid-extrusion-desserts', 'visibility')
-          // const othersGridExtrusions = map.current.getLayoutProperty('grid-extrusion-other', 'visibility')
-          // const othersPtsLayout = map.current.getLayoutProperty('businesses-layer-other', 'visibility')
-          // console.log("restaurantGridExtrusions:", restaurantGridExtrusions)
-          // console.log("restaurantPtsLayout:", restaurantPtsLayout, '\n')
-          // console.log("barsGridExtrusions:", barsGridExtrusions)
-          // console.log("barsPtsLayout:", barsPtsLayout, '\n')
-          // console.log("fastFoodGridExtrusions:", fastFoodGridExtrusions)
-          // console.log("fastFoodPtsLayout:", fastFoodPtsLayout, '\n')
-          // console.log("dessertsGridExtrusions:", dessertsGridExtrusions)
-          // console.log("dessertsPtsLayout:", dessertsPtsLayout, '\n')
-          // console.log("othersGridExtrusions:", othersGridExtrusions)
-          // console.log("othersGridExtrusions:", othersPtsLayout, '\n')
 
           // Check if at least one filter layer is visible
           const filterRestaurants = (map.current.getLayoutProperty('grid-extrusion-restaurants', 'visibility') === 'visible' || map.current.getLayoutProperty('businesses-layer-restaurants', 'visibility') === 'visible') ? "grid-extrusion-restaurants" : null
@@ -876,14 +879,14 @@ const Map : NextPage = () => {
           const filterFastFood = (map.current.getLayoutProperty('grid-extrusion-desserts', 'visibility') === 'visible' || map.current.getLayoutProperty('businesses-layer-desserts', 'visibility') === 'visible') ? "grid-extrusion-desserts" : null
           const filterOthers = (map.current.getLayoutProperty('grid-extrusion-other', 'visibility') === 'visible' || map.current.getLayoutProperty('businesses-layer-other', 'visibility') === 'visible') ? "grid-extrusion-other" : null
           
-          console.log('FILTERS UPON ZOOM:')
+          // console.log('FILTERS UPON ZOOM:')
           const selectedFilter = (filterRestaurants || filterBars || filterDesserts || filterFastFood || filterOthers)
-          console.log('SELECTED FILTER:', selectedFilter)
-          console.log('filterRestaurants:',filterRestaurants)
-          console.log('filterBars:',filterBars)
-          console.log('filterDesserts:',filterDesserts)
-          console.log('filterFastFood:',filterFastFood)
-          console.log('filterOthers:',filterOthers)
+          // console.log('SELECTED FILTER:', selectedFilter)
+          // console.log('filterRestaurants:',filterRestaurants)
+          // console.log('filterBars:',filterBars)
+          // console.log('filterDesserts:',filterDesserts)
+          // console.log('filterFastFood:',filterFastFood)
+          // console.log('filterOthers:',filterOthers)
 
           if (map.current.getZoom() > zoomThreshold ) {
             // console.log('HIDING EXTRUSIONS', map.current.getSource('selected-area'))
@@ -1103,28 +1106,6 @@ const setFilter = (filterName) => {
         map.current.setLayoutProperty('grid-extrusion-other', 'visibility', 'visible');
     }
   }
-
-  // const restaurantGridExtrusions = map.current.getLayoutProperty('grid-extrusion-restaurants', 'visibility')
-  // const restaurantPtsLayout= map.current.getLayoutProperty('businesses-layer-restaurants', 'visibility')
-  // const barsPtsLayout = map.current.getLayoutProperty('businesses-layer-bars', 'visibility')
-  // const barsGridExtrusions = map.current.getLayoutProperty('grid-extrusion-bars', 'visibility')
-  // const fastFoodGridExtrusions = map.current.getLayoutProperty('grid-extrusion-fast-food', 'visibility')
-  // const fastFoodPtsLayout = map.current.getLayoutProperty('businesses-layer-fast-food', 'visibility')
-  // const dessertsPtsLayout = map.current.getLayoutProperty('businesses-layer-desserts', 'visibility')
-  // const dessertsGridExtrusions = map.current.getLayoutProperty('grid-extrusion-desserts', 'visibility')
-  // const othersGridExtrusions = map.current.getLayoutProperty('grid-extrusion-other', 'visibility')
-  // const othersPtsLayout = map.current.getLayoutProperty('businesses-layer-other', 'visibility')
-  // console.log("restaurantGridExtrusions:", restaurantGridExtrusions)
-  // console.log("restaurantPtsLayout:", restaurantPtsLayout, '\n')
-  // console.log("barsGridExtrusions:", barsGridExtrusions)
-  // console.log("barsPtsLayout:", barsPtsLayout, '\n')
-  // console.log("fastFoodGridExtrusions:", fastFoodGridExtrusions)
-  // console.log("fastFoodPtsLayout:", fastFoodPtsLayout, '\n')
-  // console.log("dessertsGridExtrusions:", dessertsGridExtrusions)
-  // console.log("dessertsPtsLayout:", dessertsPtsLayout, '\n')
-  // console.log("othersGridExtrusions:", othersGridExtrusions)
-  // console.log("othersGridExtrusions:", othersPtsLayout, '\n')
-
 }
   
 

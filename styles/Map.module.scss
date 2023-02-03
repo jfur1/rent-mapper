@@ -41,9 +41,60 @@ main.container{
 }
 
 .popup{
-    max-width: 400px;
-    color:rgb(39, 39, 39);
-    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    #container{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100px;
+        max-height: 100px;
+        min-width: 170px;
+        max-width: 170px;
+        margin: 0;
+        padding: 0;
+
+        span{
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            transform: translate(50%, 50%);
+            margin-bottom: 10%;
+            opacity: 0.7;
+        }
+    }
+    #row{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+
+        #col{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 3px;
+            padding: 0 3px;
+            // border: 1px solid pink;
+            height: 75px;
+        }
+    }
+
+    #average,
+    #number{
+        color: orange;
+        font-size: 20px;
+        opacity: 1;
+        font-weight: 600;
+    }
+
+    #desc{
+        margin-top: 5px;
+        color: #ddd;
+        font-size: 12px;
+        opacity: 1;
+    }
 }
 
 .legend{
@@ -161,7 +212,7 @@ main.container{
         &.active{
             cursor: pointer;
             background-color: rgb(215, 188, 36);
-            
+
             &:hover{
                 background-color: rgb(215, 188, 36, 0.75);
             }
