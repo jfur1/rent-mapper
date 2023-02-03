@@ -766,6 +766,14 @@ const Map : NextPage = () => {
             }
         })
 
+        // Static helper dict
+        const extrusionIdDict = {
+          "grid-extrusion-restaurants": "Restaurants",
+          "grid-extrusion-bars": "Bars",
+          "grid-extrusion-fast-food": "Fast Food",
+          "grid-extrusion-desserts": "Desserts",
+          "grid-extrusion-other": "Other Types",
+        }
 
         // // Create a popup, but don't add it to the map yet.
         const popup = new mapboxgl.Popup({
@@ -814,6 +822,7 @@ const Map : NextPage = () => {
           map.current.removeFeatureState({ source: 'grid-extrusion-fast-food' });
           map.current.removeFeatureState({ source: 'grid-extrusion-desserts' });
           map.current.removeFeatureState({ source: 'grid-extrusion-other' });
+          
           if(e.features.length > 0){
             if(e.features[0].properties.height > 0 && 
               e.features[0].layer.id === 'grid-extrusion' 
@@ -823,14 +832,29 @@ const Map : NextPage = () => {
               ||  e.features[0].layer.id === 'grid-extrusion-desserts'
               ||  e.features[0].layer.id === 'grid-extrusion-other'
               ){
-              // const features = map.current.queryRenderedFeatures(e.point);
+              const filterRestaurants = (map.current.getLayoutProperty('grid-extrusion-restaurants', 'visibility') === 'visible' || map.current.getLayoutProperty('businesses-layer-restaurants', 'visibility') === 'visible') ? "grid-extrusion-restaurants" : null
+              const filterBars = (map.current.getLayoutProperty('grid-extrusion-bars', 'visibility') === 'visible' || map.current.getLayoutProperty('businesses-layer-bars', 'visibility') === 'visible') ? "grid-extrusion-bars" : null
+              const filterDesserts = (map.current.getLayoutProperty('grid-extrusion-fast-food', 'visibility') === 'visible' || map.current.getLayoutProperty('businesses-layer-fast-food', 'visibility') === 'visible') ? "grid-extrusion-fast-food" : null
+              const filterFastFood = (map.current.getLayoutProperty('grid-extrusion-desserts', 'visibility') === 'visible' || map.current.getLayoutProperty('businesses-layer-desserts', 'visibility') === 'visible') ? "grid-extrusion-desserts" : null
+              const filterOthers = (map.current.getLayoutProperty('grid-extrusion-other', 'visibility') === 'visible' || map.current.getLayoutProperty('businesses-layer-other', 'visibility') === 'visible') ? "grid-extrusion-other" : null
+              const selectedFilter = (filterRestaurants || filterBars || filterDesserts || filterFastFood || filterOthers)
               console.log(e.features[0])
+              console.log("selectedFilter:", selectedFilter)
+
               map.current.getCanvas().style.cursor = 'pointer';
               const height = e.features[0].properties.height;
               const avgPriceWithinFeature = e.features[0].properties.avgPriceWithinFeature;
               const nPointsWithin = e.features[0].properties.nPointsWithin
               const id = e.features[0].id;
               hoveredStateId = e.features[0].id;
+              
+              const nPointsDict = {
+                "grid-extrusion-restaurants": e.features[0].properties.nRestaurantsWithinHex,
+                "grid-extrusion-bars": e.features[0].properties.nBarsWithinHex,
+                "grid-extrusion-fast-food": e.features[0].properties.nFastFoodWithinHex,
+                "grid-extrusion-desserts": e.features[0].properties.nDessertsWithinHex,
+                "grid-extrusion-other": e.features[0].properties.nOtherWithinHex,
+              }
 
               const HTML = `
                 <div id='${styles['container']}'>
@@ -840,8 +864,16 @@ const Map : NextPage = () => {
                       <p id='${styles["desc"]}'>Average price</p>
                     </div>
                     <div id='${styles["col"]}'>
-                      <p id='${styles["number"]}'>${nPointsWithin}</p>
-                      <p id='${styles["desc"]}'>Businesses</p>
+                      <p id='${styles["number"]}'>${
+                        !!selectedFilter 
+                          ? nPointsDict[selectedFilter]
+                          : nPointsWithin
+                      }</p>
+                      <p id='${styles["desc"]}'>${
+                        !!selectedFilter 
+                          ? extrusionIdDict[selectedFilter]
+                          : "Businesses"
+                      }</p>
                     </div>
                   </div>
                   <span>Click to learn more.</span>
@@ -878,9 +910,9 @@ const Map : NextPage = () => {
           const filterDesserts = (map.current.getLayoutProperty('grid-extrusion-fast-food', 'visibility') === 'visible' || map.current.getLayoutProperty('businesses-layer-fast-food', 'visibility') === 'visible') ? "grid-extrusion-fast-food" : null
           const filterFastFood = (map.current.getLayoutProperty('grid-extrusion-desserts', 'visibility') === 'visible' || map.current.getLayoutProperty('businesses-layer-desserts', 'visibility') === 'visible') ? "grid-extrusion-desserts" : null
           const filterOthers = (map.current.getLayoutProperty('grid-extrusion-other', 'visibility') === 'visible' || map.current.getLayoutProperty('businesses-layer-other', 'visibility') === 'visible') ? "grid-extrusion-other" : null
+          const selectedFilter = (filterRestaurants || filterBars || filterDesserts || filterFastFood || filterOthers)
           
           // console.log('FILTERS UPON ZOOM:')
-          const selectedFilter = (filterRestaurants || filterBars || filterDesserts || filterFastFood || filterOthers)
           // console.log('SELECTED FILTER:', selectedFilter)
           // console.log('filterRestaurants:',filterRestaurants)
           // console.log('filterBars:',filterBars)
@@ -923,9 +955,9 @@ const Map : NextPage = () => {
               hexagonSelected = true;
               console.log('%c setting zoom TRUE ', 'background: #222, color: red')
               setZoomed(true)
-              console.log('Clicked on polygon:', e.features[0].id)
-              console.log('Clicked on polygon:', e.features[0].geometry.coordinates)
               console.log('Clicked on polygon:', e.features[0])
+              console.log('Clicked on polygon:', e.features[0].geometry.coordinates)
+              console.log('Clicked on polygon:', e.features[0].properties)
               const target = {
                 center: [e.features[0].properties.x, e.features[0].properties.y],
                 zoom: 16,
