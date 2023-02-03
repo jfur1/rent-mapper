@@ -846,10 +846,45 @@ const Map : NextPage = () => {
 
         const zoomThreshold = 14;
         let hexagonSelected = false;
-        const layoutLoaded = map.current.getLayoutProperty('grid-extrusion', 'visibility')
-
         // If we zoom in more than Nx, then hide grid-extrusion layer
-        map.current.on('zoom', () => {
+        map.current.on('zoom', (e) => {
+          // const restaurantGridExtrusions = map.current.getLayoutProperty('grid-extrusion-restaurants', 'visibility')
+          // const restaurantPtsLayout= map.current.getLayoutProperty('businesses-layer-restaurants', 'visibility')
+          // const barsPtsLayout = map.current.getLayoutProperty('businesses-layer-bars', 'visibility')
+          // const barsGridExtrusions = map.current.getLayoutProperty('grid-extrusion-bars', 'visibility')
+          // const fastFoodGridExtrusions = map.current.getLayoutProperty('grid-extrusion-fast-food', 'visibility')
+          // const fastFoodPtsLayout = map.current.getLayoutProperty('businesses-layer-fast-food', 'visibility')
+          // const dessertsPtsLayout = map.current.getLayoutProperty('businesses-layer-desserts', 'visibility')
+          // const dessertsGridExtrusions = map.current.getLayoutProperty('grid-extrusion-desserts', 'visibility')
+          // const othersGridExtrusions = map.current.getLayoutProperty('grid-extrusion-other', 'visibility')
+          // const othersPtsLayout = map.current.getLayoutProperty('businesses-layer-other', 'visibility')
+          // console.log("restaurantGridExtrusions:", restaurantGridExtrusions)
+          // console.log("restaurantPtsLayout:", restaurantPtsLayout, '\n')
+          // console.log("barsGridExtrusions:", barsGridExtrusions)
+          // console.log("barsPtsLayout:", barsPtsLayout, '\n')
+          // console.log("fastFoodGridExtrusions:", fastFoodGridExtrusions)
+          // console.log("fastFoodPtsLayout:", fastFoodPtsLayout, '\n')
+          // console.log("dessertsGridExtrusions:", dessertsGridExtrusions)
+          // console.log("dessertsPtsLayout:", dessertsPtsLayout, '\n')
+          // console.log("othersGridExtrusions:", othersGridExtrusions)
+          // console.log("othersGridExtrusions:", othersPtsLayout, '\n')
+
+          // Check if at least one filter layer is visible
+          const filterRestaurants = (map.current.getLayoutProperty('grid-extrusion-restaurants', 'visibility') === 'visible' || map.current.getLayoutProperty('businesses-layer-restaurants', 'visibility') === 'visible') ? "grid-extrusion-restaurants" : null
+          const filterBars = (map.current.getLayoutProperty('grid-extrusion-bars', 'visibility') === 'visible' || map.current.getLayoutProperty('businesses-layer-bars', 'visibility') === 'visible') ? "grid-extrusion-bars" : null
+          const filterDesserts = (map.current.getLayoutProperty('grid-extrusion-fast-food', 'visibility') === 'visible' || map.current.getLayoutProperty('businesses-layer-fast-food', 'visibility') === 'visible') ? "grid-extrusion-fast-food" : null
+          const filterFastFood = (map.current.getLayoutProperty('grid-extrusion-desserts', 'visibility') === 'visible' || map.current.getLayoutProperty('businesses-layer-desserts', 'visibility') === 'visible') ? "grid-extrusion-desserts" : null
+          const filterOthers = (map.current.getLayoutProperty('grid-extrusion-other', 'visibility') === 'visible' || map.current.getLayoutProperty('businesses-layer-other', 'visibility') === 'visible') ? "grid-extrusion-other" : null
+          
+          console.log('FILTERS UPON ZOOM:')
+          const selectedFilter = (filterRestaurants || filterBars || filterDesserts || filterFastFood || filterOthers)
+          console.log('SELECTED FILTER:', selectedFilter)
+          console.log('filterRestaurants:',filterRestaurants)
+          console.log('filterBars:',filterBars)
+          console.log('filterDesserts:',filterDesserts)
+          console.log('filterFastFood:',filterFastFood)
+          console.log('filterOthers:',filterOthers)
+
           if (map.current.getZoom() > zoomThreshold ) {
             // console.log('HIDING EXTRUSIONS', map.current.getSource('selected-area'))
             map.current.setLayoutProperty('grid-extrusion', 'visibility', 'none');
@@ -862,7 +897,13 @@ const Map : NextPage = () => {
           // User zooms out -- only set visible if the user is also NOT focused on selected hexagon
           else if (map.current.getZoom() <= zoomThreshold && (typeof(map.current.getSource('selected-area')) === 'undefined') ) {
             // console.log('UNHIDE EXTRUSIONS', map.current.getSource('selected-area'))
-            map.current.setLayoutProperty('grid-extrusion', 'visibility', 'visible');
+            if(selectedFilter){
+              // Hide total extrusion grid if a filter is selected, and also set the selected filter's extrusion layer to visible
+              map.current.setLayoutProperty('grid-extrusion', 'visibility', 'none');
+              map.current.setLayoutProperty(selectedFilter, 'visibility', 'visible');
+            }
+            else
+              map.current.setLayoutProperty('grid-extrusion', 'visibility', 'visible');
           } else {
             map.current.setLayoutProperty('grid-extrusion', 'visibility', 'none');
             map.current.setLayoutProperty('grid-extrusion-restaurants', 'visibility', 'none');
@@ -966,9 +1007,25 @@ const handleClick = (tabID) => {
 // Takes filter name as a parameter
 // Hide all layers except for this filter
 const setFilter = (filterName) => {
+  var showExtrusions = false
+  const zoomThreshold = 14;
+
+  // Check if extrusion for the selectedTab should be show, based on zoom
+  if (map.current.getZoom() > zoomThreshold ) {
+    map.current.setLayoutProperty('grid-extrusion', 'visibility', 'none');
+    map.current.setLayoutProperty('grid-extrusion-bars', 'visibility', 'none');
+    map.current.setLayoutProperty('grid-extrusion-desserts', 'visibility', 'none');
+    map.current.setLayoutProperty('grid-extrusion-fast-food', 'visibility', 'none');
+    map.current.setLayoutProperty('grid-extrusion-restaurants', 'visibility', 'none');
+    map.current.setLayoutProperty('grid-extrusion-other', 'visibility', 'none');
+  }
+  // User is zoomed out -- only set visible if the user is also NOT focused on selected hexagon
+  else if(map.current.getZoom() <= zoomThreshold && (typeof(map.current.getSource('selected-area')) === 'undefined')){
+    showExtrusions = true
+  }
+
   if(filterName ==='init'){
     // Show default business layers and hide categorized layers
-    map.current.setLayoutProperty('grid-extrusion', 'visibility', 'visible');
     map.current.setLayoutProperty('businesses-layer-restaurants', 'visibility', 'none');
     map.current.setLayoutProperty('businesses-layer-bars', 'visibility', 'none');
     map.current.setLayoutProperty('businesses-layer-fast-food', 'visibility', 'none');
@@ -983,23 +1040,10 @@ const setFilter = (filterName) => {
     map.current.setLayoutProperty('grid-extrusion-fast-food', 'visibility', 'none');
     map.current.setLayoutProperty('grid-extrusion-desserts', 'visibility', 'none');
     map.current.setLayoutProperty('grid-extrusion-other', 'visibility', 'none');
-    
+    if(showExtrusions)
+      map.current.setLayoutProperty('grid-extrusion', 'visibility', 'visible');
     return;
   } else {
-    var showExtrusions = false
-    const zoomThreshold = 14;
-    // Check if extrusion for the selectedTab should be show, based on zoom
-    if (map.current.getZoom() > zoomThreshold ) {
-      map.current.setLayoutProperty('grid-extrusion-bars', 'visibility', 'none');
-      map.current.setLayoutProperty('grid-extrusion-desserts', 'visibility', 'none');
-      map.current.setLayoutProperty('grid-extrusion-fast-food', 'visibility', 'none');
-      map.current.setLayoutProperty('grid-extrusion-restaurants', 'visibility', 'none');
-      map.current.setLayoutProperty('grid-extrusion-other', 'visibility', 'none');
-    }
-    // User is zoomed out -- only set visible if the user is also NOT focused on selected hexagon
-    else if(map.current.getZoom() <= zoomThreshold && (typeof(map.current.getSource('selected-area')) === 'undefined')){
-      showExtrusions = true
-    }
 
     map.current.setLayoutProperty('grid-extrusion', 'visibility', 'none');
     map.current.setLayoutProperty('businesses-layer-1', 'visibility', 'none');
@@ -1059,6 +1103,28 @@ const setFilter = (filterName) => {
         map.current.setLayoutProperty('grid-extrusion-other', 'visibility', 'visible');
     }
   }
+
+  // const restaurantGridExtrusions = map.current.getLayoutProperty('grid-extrusion-restaurants', 'visibility')
+  // const restaurantPtsLayout= map.current.getLayoutProperty('businesses-layer-restaurants', 'visibility')
+  // const barsPtsLayout = map.current.getLayoutProperty('businesses-layer-bars', 'visibility')
+  // const barsGridExtrusions = map.current.getLayoutProperty('grid-extrusion-bars', 'visibility')
+  // const fastFoodGridExtrusions = map.current.getLayoutProperty('grid-extrusion-fast-food', 'visibility')
+  // const fastFoodPtsLayout = map.current.getLayoutProperty('businesses-layer-fast-food', 'visibility')
+  // const dessertsPtsLayout = map.current.getLayoutProperty('businesses-layer-desserts', 'visibility')
+  // const dessertsGridExtrusions = map.current.getLayoutProperty('grid-extrusion-desserts', 'visibility')
+  // const othersGridExtrusions = map.current.getLayoutProperty('grid-extrusion-other', 'visibility')
+  // const othersPtsLayout = map.current.getLayoutProperty('businesses-layer-other', 'visibility')
+  // console.log("restaurantGridExtrusions:", restaurantGridExtrusions)
+  // console.log("restaurantPtsLayout:", restaurantPtsLayout, '\n')
+  // console.log("barsGridExtrusions:", barsGridExtrusions)
+  // console.log("barsPtsLayout:", barsPtsLayout, '\n')
+  // console.log("fastFoodGridExtrusions:", fastFoodGridExtrusions)
+  // console.log("fastFoodPtsLayout:", fastFoodPtsLayout, '\n')
+  // console.log("dessertsGridExtrusions:", dessertsGridExtrusions)
+  // console.log("dessertsPtsLayout:", dessertsPtsLayout, '\n')
+  // console.log("othersGridExtrusions:", othersGridExtrusions)
+  // console.log("othersGridExtrusions:", othersPtsLayout, '\n')
+
 }
   
 
