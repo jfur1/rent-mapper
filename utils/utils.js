@@ -96,6 +96,8 @@ export const jsonToGeoJson = (data, score) => {
                 "name" : data[i].name,
                 "location" : data[i].location,
                 "categories": data[i].categories,
+                "businessType": data[i].categories[0].name,
+                "address": data[i].location.address,
                 "score" : score
             }
         }
@@ -124,7 +126,8 @@ export const categorizeBusinesses = (businessesGeoJson) => {
     for(var i=0; i < businessesGeoJson.features.length; i++){
         const categoryName=businessesGeoJson.features[i].properties.categories[0].name
         const category = categoryName.toLowerCase()
-        // console.log(businessesGeoJson.features[i])
+        console.log(businessesGeoJson.features[i])
+        const location = businessesGeoJson.features[i].properties.location
         var point = {
             "type": "Feature",
             "id": 'business',
@@ -133,16 +136,20 @@ export const categorizeBusinesses = (businessesGeoJson) => {
                 "coordinates" : businessesGeoJson.features[i].geometry.coordinates
             },
             "properties" : {
-                ...businessesGeoJson.features[i].properties,
-                businessType: categoryName
+                // ...businessesGeoJson.features[i].properties,
+                location: location,
+                businessType: categoryName,
+                name: businessesGeoJson.features[i].properties.name,
+                address: businessesGeoJson.features[i].properties.address,
+                score: businessesGeoJson.features[i].properties.score
             }
         }
 
 
-        if(category.includes('bar') || category.includes('drinks') ){
+        if(category.includes('bar') || category.includes('drinks') || category.includes('pub') ){
             barPoints.push(point)
         }
-        else if(category.includes('fast food') || category.includes('pizza') || category.includes('pizzeria') || category.includes('deli')){
+        else if(category.includes('fast food') || category.includes('pizza') || category.includes('pizzeria') || category.includes('burger') || category.includes('deli')){
             fastFoodPoints.push(point)
         }
         else if(category.includes('donuts') || category.includes('ice cream') || category.includes('bakery')){
@@ -151,11 +158,10 @@ export const categorizeBusinesses = (businessesGeoJson) => {
         else if(category.includes('school') || category.includes('club') || category.includes('coffee')){
             otherPoints.push(point)
         }
-        else if(category.includes('restaurant')){
+        else if(category.includes('restaurant') || category.includes('steakhouse')){
             restaurantPoints.push(point)
         } else {
             otherPoints.push(point)
-
         }
     }
 

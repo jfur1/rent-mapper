@@ -778,7 +778,7 @@ const Map : NextPage = () => {
         map.current.on('mousemove', ['businesses-layer-1', 'businesses-layer-2','businesses-layer-3','businesses-layer-4',
         'businesses-layer-restaurants' , 'businesses-layer-bars', 'businesses-layer-fast-food', 'businesses-layer-desserts', 'businesses-layer-other'], (e) => {
           console.log('MouseEnter Point: ', e.features[0])
-          console.log('MouseEnter Point: ', e.features[0].properties.categories[0]?.name)
+          // console.log('MouseEnter Point: ', e.features[0].properties.categories[0].name)
           console.log('MouseEnter Point: ', e.features[0].geometry.coordinates)
           map.current.getCanvas().style.cursor = 'pointer';
           const name = e.features[0].properties.name
