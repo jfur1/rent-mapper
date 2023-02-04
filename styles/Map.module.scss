@@ -234,6 +234,8 @@ main.container{
 
     .toggleItem{
         background: #777;
+        display: flex;
+        align-items: center;
         border-radius: 5px;
         margin-bottom: 5px;
         font-size: larger;

@@ -17,7 +17,10 @@ import MapboxGeocoder from 'mapbox-gl-geocoder'
 import * as turf from '@turf/turf';
 import MarketData from '../utils/geoJSON_market_data.json'
 import LoadingSpinner from '../components/Loading.tsx'
-import { BsInfoCircle } from 'react-icons/bs'
+import { BsInfoCircle, BsThreeDots } from 'react-icons/bs'
+import { FaBeer } from "react-icons/fa";
+import { GiCupcake } from "react-icons/gi";
+import { MdRoomService, MdFastfood } from "react-icons/md";
 
 const Map : NextPage = () => {
   const mapContainer = useRef<any>(null);
@@ -1337,19 +1340,24 @@ const setFilter = (filterName) => {
           <h4 className={styles['filters-title']}>Toggle Features</h4>
             <ul className={styles["layerToggles"]}>
               <li className={styles["toggleItem"]+' '+(selectedTab === 1 ? styles["active"] : '')} onClick={() => handleClick(1)}>
-                Restaurants
+                <MdRoomService  style={{ marginRight: '10px'}}/>
+                <p>Restaurants</p>
               </li>
               <li className={styles["toggleItem"]+' '+(selectedTab === 2 ? styles["active"] : '')} onClick={() => handleClick(2)}>
-                Bars
+                <FaBeer style={{ marginRight: '10px'}}/>
+                <p>Bars</p>
               </li>
               <li className={styles["toggleItem"]+' '+(selectedTab === 3 ? styles["active"] : '')} onClick={() => handleClick(3)}>
-                Fast Food
+                <MdFastfood style={{ marginRight: '10px'}}/>
+                <p>Fast Food</p>
               </li>
               <li className={styles["toggleItem"]+' '+(selectedTab === 4 ? styles["active"] : '')} onClick={() => handleClick(4)}>
-                Desserts
+                <GiCupcake  style={{ marginRight: '10px'}}/>
+                <p>Desserts</p>
               </li>
               <li className={styles["toggleItem"]+' '+(selectedTab === 5 ? styles["active"] : '')} onClick={() => handleClick(5)}>
-                Other
+                <BsThreeDots style={{ marginRight: '10px'}}/>
+                <p>Other</p>
               </li>
             </ul>
 
