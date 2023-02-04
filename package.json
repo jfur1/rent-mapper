@@ -18,7 +18,6 @@
     "eslint": "8.33.0",
     "eslint-config-next": "13.1.6",
     "mapbox-gl": "^2.12.0",
-    "mapbox-gl-geocoder": "^2.0.1",
     "next": "13.1.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -27,6 +26,7 @@
     "typescript": "4.9.4"
   },
   "devDependencies": {
-    "@types/mapbox-gl": "^2.7.10"
+    "@types/mapbox-gl": "^2.7.10",
+    "mapbox-gl-geocoder": "^2.0.1"
   }
 }
