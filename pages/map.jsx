@@ -114,10 +114,10 @@ const Map = () => {
       }
       setAllBusinesses(geoTotal)
 
-      console.log('businesses', geo1)
-      console.log('businesses2', geo2)
-      console.log('businesses3', geo3)
-      console.log('businesses4', geo4)
+      // console.log('businesses', geo1)
+      // console.log('businesses2', geo2)
+      // console.log('businesses3', geo3)
+      // console.log('businesses4', geo4)
 
       console.log(`API Returned ${geoTotal.features.length} total results`)
       console.log('%c Finished fetching data!\n', 'background: #111; color: #bada55')
