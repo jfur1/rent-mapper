@@ -15,7 +15,7 @@ import {
  } from '../utils/utils.js'
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 import * as turf from '@turf/turf';
-import LoadingSpinner from '../components/Loading.tsx'
+import LoadingSpinner from '../components/Loading'
 import { BsInfoCircle, BsThreeDots } from 'react-icons/bs'
 import { FaBeer } from "react-icons/fa";
 import { GiCupcake } from "react-icons/gi";
