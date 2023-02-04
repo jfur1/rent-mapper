@@ -4,7 +4,7 @@ import styles from '../styles/Map.module.scss'
 import type { NextPage } from 'next';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import 'mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { 
   boundingBox, 
   randomIntFromInterval, 
@@ -13,7 +13,7 @@ import {
   geoJsonToPoints,
   categorizeBusinesses
  } from '../utils/utils.js'
-import MapboxGeocoder from 'mapbox-gl-geocoder'
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 import * as turf from '@turf/turf';
 import MarketData from '../utils/geoJSON_market_data.json'
 import LoadingSpinner from '../components/Loading.tsx'

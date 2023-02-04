@@ -26,7 +26,7 @@
     "typescript": "4.9.4"
   },
   "devDependencies": {
-    "@types/mapbox-gl": "^2.7.10",
-    "mapbox-gl-geocoder": "^2.0.1"
+    "@mapbox/mapbox-gl-geocoder": "^5.0.1",
+    "@types/mapbox-gl": "^2.7.10"
   }
 }
