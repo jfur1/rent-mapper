@@ -1,7 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import Head from 'next/head'
 import styles from '../styles/Map.module.scss'
-import type { NextPage } from 'next';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
@@ -21,9 +20,9 @@ import { FaBeer } from "react-icons/fa";
 import { GiCupcake } from "react-icons/gi";
 import { MdRoomService, MdFastfood } from "react-icons/md";
 
-const Map : NextPage = () => {
-  const mapContainer = useRef<any>(null);
-  const map = useRef<mapboxgl.Map | any>(null);
+const Map = () => {
+  const mapContainer = useRef(null);
+  const map = useRef(null);
   const INIT_X = -104.991531
   const INIT_Y = 39.742043
   let sessionToken = generateRandomSessionToken();
@@ -54,17 +53,17 @@ const Map : NextPage = () => {
         radius: 11000,
         min_price:1,
         max_price:1,
-        session_token: sessionToken,
+        session_token: sessionToken.toString(),
         limit: 50
       }
       var searchParams2 = {...searchParams, min_price:2, max_price:2}
       var searchParams3 = {...searchParams, min_price:3, max_price:3}
       var searchParams4 = {...searchParams, min_price:4, max_price:4}
       // Formatting
-      searchParams = new URLSearchParams(searchParams).toString();
-      searchParams2 = new URLSearchParams(searchParams2).toString();
-      searchParams3 = new URLSearchParams(searchParams3).toString();
-      searchParams4 = new URLSearchParams(searchParams4).toString();
+      searchParams = new URLSearchParams(searchParams).toString()
+      searchParams2  = new URLSearchParams(searchParams2).toString()
+      searchParams3  = new URLSearchParams(searchParams3).toString()
+      searchParams4  = new URLSearchParams(searchParams4).toString()
 
       const headers = new Headers({
         Accept: 'application/json',
@@ -175,11 +174,10 @@ const Map : NextPage = () => {
 
   const showMap = async() => {
       // Initialize New Map
-      mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN;
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/dark-v11',
-        center: center,
+        center: [center[0], center[1]],
         zoom: 12.5,
         pitch: 45,
         bearing: 20,
