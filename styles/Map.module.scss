@@ -9,18 +9,21 @@ main.container{
     height: 100vh;
     background-color: rgb(39, 39, 39);
     border-right: 2px solid #111;
-    padding: 2rem;
+    padding: 2rem 2rem 0.5rem;
+    overflow-y: auto;
 }
 
 .title{
     text-align: left;
-    font-size: xx-large;
+    font-size: x-large;
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
 }
 
 .description{
     text-align: left;
     font-size: large;
     margin: 1rem 0;
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
 }
 
 .map-container{
@@ -98,7 +101,25 @@ main.container{
 }
 
 .legend{
+    .legend-header{
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
 
+        .more-info-toggle{
+            &:hover{
+                cursor: pointer;
+            }
+        }
+    }
+    .more-info{
+        background-color: rgb(21, 21, 21);
+        padding: 10px;
+        margin-bottom: 10px;
+        font-size: 12px;
+        font-family: 'Poppins', Arial, Helvetica, sans-serif;
+        font-weight: 300;
+    }
     .circle{
         border: 3px solid #ddd;
         border-radius: 50%;
@@ -128,7 +149,7 @@ main.container{
         width: 100%;
         max-width: 200px;
         max-height: 90px;
-        margin: 0px auto 0px;
+        margin: 0px 10px 0px;
         // border: 1px solid #ddd;
       
        .small-bar-chart-bar-container {
@@ -136,19 +157,33 @@ main.container{
             vertical-align: bottom;
             margin-bottom: 4px;
             height: 100px;
-            width: 40px;
+            width: 55px;
 
             #small-bar-chart-bar- {
-                &1{background: red;}
-                &2{background: blue;}
-                &3{background: green;}
-                &4{background: orange;}
+                &1{
+                    background: rgba(47, 128, 33, 0.908);
+                    filter: brightness(70%);
+                }
+                &2{
+                    background: rgba(75, 155, 60, 0.908);
+                    filter: brightness(70%);
+                }
+                &3{
+                    background: rgba(107, 201, 90, 0.908);
+                    filter: brightness(70%);
+                }
+                &4{
+                    background: rgba(137, 245, 118, 0.908);
+                    filter: brightness(70%);
+                }
             }
             .small-bar-chart-bar {
                 margin: 0 2px 2px;
                 display: block;
                 background: #484849;
                 border-radius: 8px;
+                padding-bottom: 6px;
+                transition: height 0.4s ease-in-out;
             }
         }
     }
@@ -157,7 +192,7 @@ main.container{
         // border: 1px solid #ddd;
         display: flex;
         margin: 10px auto;
-        padding: 0 5px 0 10px;
+        padding: 0 5px 0 7px;
         max-width: 200px;
         width: 100%;
         align-items: center;
@@ -177,7 +212,7 @@ main.container{
             flex-basis: 0;
         }
         .label-text{
-            font-size: 18px;
+            font-size: 14px;
             text-align: center;
             font-family: 'Poppins';
             font-weight: 300;
@@ -203,6 +238,7 @@ main.container{
         margin-bottom: 5px;
         font-size: larger;
         padding: 5px 10px;
+        font-family: 'Poppins', Arial, Helvetica, sans-serif;
 
         &:hover{
             cursor: pointer;
@@ -229,11 +265,12 @@ main.container{
     padding: 5px 10px;
     margin-bottom: 10px;
     margin-right: 10px;
-    font-size: medium;
+    font-size: larger;
     z-index: 5;
     border: 1px solid #aaa;
     border-radius: 5px;
     visibility: hidden;
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
 }
 
 .zoomOut:hover{

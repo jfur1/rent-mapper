@@ -146,10 +146,10 @@ export const categorizeBusinesses = (businessesGeoJson) => {
         }
 
 
-        if(category.includes('bar') || category.includes('drinks') || category.includes('pub') ){
+        if(category.includes('bar') || category.includes('drinks') || category.includes('pub') || category.includes('drinking')){
             barPoints.push(point)
         }
-        else if(category.includes('fast food') || category.includes('pizza') || category.includes('pizzeria') || category.includes('burger') || category.includes('deli')){
+        else if(category.includes('fast food') || category.includes('pizza') || category.includes('pizzeria') || category.includes('diner') || category.includes('deli')){
             fastFoodPoints.push(point)
         }
         else if(category.includes('donuts') || category.includes('ice cream') || category.includes('bakery')){
@@ -160,7 +160,8 @@ export const categorizeBusinesses = (businessesGeoJson) => {
         }
         else if(category.includes('restaurant') || category.includes('steakhouse')){
             restaurantPoints.push(point)
-        } else {
+        } 
+        else {
             otherPoints.push(point)
         }
     }

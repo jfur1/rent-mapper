@@ -17,6 +17,7 @@ import MapboxGeocoder from 'mapbox-gl-geocoder'
 import * as turf from '@turf/turf';
 import MarketData from '../utils/geoJSON_market_data.json'
 import LoadingSpinner from '../components/Loading.tsx'
+import { BsInfoCircle } from 'react-icons/bs'
 
 const Map : NextPage = () => {
   const mapContainer = useRef<any>(null);
@@ -39,6 +40,8 @@ const Map : NextPage = () => {
   const [allBusinesses, setAllBusinesses] = useState(geoJsonStructure);
   const [center, setCenter] = useState([INIT_X, INIT_Y]);
   const [place, setPlace] = useState("Denver, Colorado");
+  const [maxCounts, setMaxCounts] = useState(null);
+  const [moreInfoToggle, setMoreInfoToggle] = useState(false);
   
   const getData = async() => {
     try {
@@ -150,7 +153,9 @@ const Map : NextPage = () => {
   useEffect(() => {
     console.log(`%c Center updated: ${center}! Fetching updated data...`, 'background: #111; color: aliceblue')
     setSelectedTab(null)
-    setLoading(true)
+    setZoomed(false);
+    setLoading(true);
+    setMoreInfoToggle(false);
     if(typeof(map.current) !=='undefined' && map.current !== null){
       map.current.remove();
     }
@@ -255,7 +260,8 @@ const Map : NextPage = () => {
           ...turfPoints4.features,
         ]
       }
-  
+      // Counts for the maximum number of points found in any hexagon
+      var max_total = 0, max_restaurants = 0, max_bars = 0, max_fast_food = 0, max_desserts = 0, max_other = 0
       // console.log(turfPoints)
       var restaurantBins = [], barsBins=[], fastFoodBins=[], dessertBins=[], otherBins=[]
       var nonEmptyHexBins = []
@@ -291,13 +297,19 @@ const Map : NextPage = () => {
           const nOtherWithinHex = otherWithinHex.features.length;
     
           // console.log('Point Counts: ', nPointsWithin, nPointsWithin1, nPointsWithin2, nPointsWithin3, nPointsWithin4)
-          
+
           if(nPointsWithin > 0)
+            max_total = Math.max(nPointsWithin, max_total)
+            max_restaurants = Math.max(nRestaurantsWithinHex, max_restaurants)
+            max_bars = Math.max(nBarsWithinHex, max_bars)
+            max_fast_food = Math.max(nFastFoodWithinHex, max_fast_food)
+            max_desserts = Math.max(nDessertsWithinHex, max_desserts)
+            max_other = Math.max(nOtherWithinHex, max_other)
             // console.log('N Points within Polyon:', nPointsWithin)
             var avgPriceWithinFeature = ((nPointsWithin1) + (2 * nPointsWithin2) + (3 * nPointsWithin3) + (4 * nPointsWithin4)) / nPointsWithin;
             avgPriceWithinFeature = parseFloat(parseFloat(avgPriceWithinFeature).toFixed(2))
 
-            // Get color based on rgb(238, 83, 83) main color
+            // Get color based on rgb(137, 245, 118) main color
             const r = (137 * (avgPriceWithinFeature * 25)) / 100
             const g = (245 * (avgPriceWithinFeature * 25)) / 100
             const b = (118 * (avgPriceWithinFeature * 25)) / 100
@@ -376,14 +388,24 @@ const Map : NextPage = () => {
               }
               otherBins.push(f)
             }
-
           }
       });
 
+      // console.log("max_restaurants:",max_restaurants)
+      // console.log("max_fast_food:",max_fast_food)
+      setMaxCounts({
+        "max_restaurants" : turfRestaurants.features.length,
+        "max_bars" : turfBars.features.length,
+        "max_fast_food" : turfFastFood.features.length,
+        "max_desserts" : turfDesserts.features.length,
+        "max_other" : turfOthers.features.length 
+      })
+      
       // console.log("HEX BINS WITH NO DATA: ", emptyHexBins)
       // console.log("HEX BINS WITH WITH DATA: ", nonEmptyHexBins)
       
       map.current.on('load', async () => {  
+        console.log(maxCounts)
         const { lng, lat } = map.current.getCenter();
         // Plot geoJSON points from market_data
         map.current.addLayer({
@@ -1029,7 +1051,7 @@ const Map : NextPage = () => {
                   }
                 }) 
               }
-
+              
               if(!map.current.getLayer('selected-hexagon')){
                 // Style the selected hexagon
                 map.current.addLayer({
@@ -1065,7 +1087,8 @@ const handleClick = (tabID) => {
     setSelectedTab(null)
     return
   } 
-
+  setSelectedTab(tabID)
+  
   if(tabID === 1)
     setFilter('Restaurants')
   else if(tabID === 2)
@@ -1077,7 +1100,7 @@ const handleClick = (tabID) => {
   else if(tabID === 5)
     setFilter('Other')
 
-  setSelectedTab(tabID)
+// /  setSelectedTab(tabID)
 }
 
 // Takes filter name as a parameter
@@ -1208,6 +1231,44 @@ const setFilter = (filterName) => {
     map.current.setLayoutProperty('grid-extrusion', 'visibility', 'visible');
   }
 
+  const legendDict = {
+    1 : 'max_restaurants',
+    2 : 'max_bars',
+    3 : 'max_fast_food',
+    4 : 'max_desserts',
+    5 : 'max_other'
+  }
+
+  const heightForBar = (selectedTab, barIdx) =>{
+
+    const maxTotal = allBusinesses.features.length
+    const defaultHeights = { 
+      1 :(maxTotal * 0.1), 
+      2 :(maxTotal * 0.2), 
+      3 : (maxTotal * 0.4)
+    }
+    
+    if(selectedTab === null)
+      return defaultHeights[barIdx]
+
+    const maxVal = maxCounts[legendDict[selectedTab]]
+    console.log('max val for tab: ', selectedTab, maxVal)
+    var height = 0
+
+    if(barIdx === 3){
+      height = ((maxVal * 0.75) / maxTotal) * 100
+    }
+    else if(barIdx === 2){
+      height = ((maxVal * 0.55) / maxTotal) * 100
+    }
+    else if(barIdx === 1){
+      height = ((maxVal * 0.35) / maxTotal) * 100
+    }
+
+    console.log("HEGIHT FOR BAR ", selectedTab, height)
+    return height.toString()
+  }
+
   return (
     <main className={styles["container"]}>
       
@@ -1217,48 +1278,58 @@ const setFilter = (filterName) => {
         <div className={styles["menu-container"]}>
           <h2 className={styles["title"]}>{`Where to Eat in ${place}`}</h2>
           <p className={styles["description"]}>
-            {`What parts of ${place} have the priciest menus? Data source: `}
-            <a href='https://location.foursquare.com/developer/reference/place-search' target='blank' rel='norefferer'>{`Foursquare`}</a>
+            {`What parts of ${place} have the priciest menus?`}
+            {/* <a href='https://location.foursquare.com/developer/reference/place-search' target='blank' rel='norefferer'>{`Foursquare`}</a> */}
           </p>
 
           <div className={styles["legend"]}>
-
             <div className={styles["chart-container"]}>
-              <h3 className={styles["chart-title"]}>LEGEND</h3>
+              <span  className={styles["legend-header"]}>
+                <h3 className={styles["chart-title"]}>LEGEND</h3>
+                <BsInfoCircle onClick={() => setMoreInfoToggle(!moreInfoToggle)} className={styles['more-info-toggle']} style={{ marginLeft: '3px', transform: 'scale(0.85)'}} />
+              </span>
+              {moreInfoToggle === true
+                ? <span className={styles['more-info']}>{`This graph shows the average price from businesses, per hexabin. Height is drawn from the average number of businesses, while the color cooresponds to average prices in the area.`} </span>
+                : null
+              }
               <div className={styles["small-bar-chart"]}>
                   <div className={styles["small-bar-chart-bar-container"]}>
                       <div 
                       className={styles["small-bar-chart-bar"]}
                       id={styles['small-bar-chart-bar-1']}
-                      style={{'height': '25%'}}
+                      style={{'height': `${heightForBar(selectedTab, 1)}%`}}
                       />
                   </div>
                   <div className={styles["small-bar-chart-bar-container"]}>
                       <div 
                       className={styles["small-bar-chart-bar"]}
                       id={styles['small-bar-chart-bar-2']}
-                      style={{'height': '45%'}}
+                      style={{'height': `${heightForBar(selectedTab, 2)}%`}}
                       />
                   </div>
                   <div className={styles["small-bar-chart-bar-container"]}>
                       <div 
                       className={styles["small-bar-chart-bar"]}
                       id={styles['small-bar-chart-bar-3']}
-                      style={{'height': '60%'}}
+                      style={{'height': `${heightForBar(selectedTab, 3)}%`}}
                       />
                   </div>
                   <div className={styles["small-bar-chart-bar-container"]}>
                       <div 
                       className={styles["small-bar-chart-bar"]}
                       id={styles['small-bar-chart-bar-4']}
-                      style={{"height": '80%'}}
+                      style={{"height": '94%'}}
                       />
                   </div>
                 </div>
                 <div className={styles["bar-chart-label"]}>
-                  <p className={styles['metric-left']}>$</p>
-                  <h4 className={styles["label-text"]}>{`Price`}</h4>
-                  <p className={styles['metric-right']}>$$$$</p>
+                  <p className={styles['metric-left']}>1</p>
+                  <h4 className={styles["label-text"]}>{`Total Businesses`}</h4>
+                  <p className={styles['metric-right']}>{
+                    !!maxCounts && allBusinesses.features.length > 0
+                      ?  (!!selectedTab ? maxCounts[legendDict[selectedTab]] : allBusinesses.features.length)
+                      : null
+                    }</p>
                 </div>
               </div>
             </div>
