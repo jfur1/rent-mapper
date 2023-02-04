@@ -9,20 +9,31 @@ main.container{
     height: 100vh;
     background-color: rgb(39, 39, 39);
     border-right: 2px solid #111;
-    padding: 2rem 2rem 0.5rem;
+    padding: 1rem 2rem 0.5rem;
     overflow-y: auto;
 }
 
 .title{
     text-align: left;
+    font-size: 40px;
+    font-family: 'Amatic SC', cursive;
+    margin-bottom: 0.5rem;
+    font-weight: 300;
+    margin-bottom: 1rem;
+    // color: rgb(237, 164, 28);
+    color: rgb(19, 150, 19);
+}
+
+.location{
+    text-align: center;
     font-size: x-large;
     font-family: 'Poppins', Arial, Helvetica, sans-serif;
+    margin: 0.6rem 0;
 }
 
 .description{
     text-align: left;
     font-size: large;
-    margin: 1rem 0;
     font-family: 'Poppins', Arial, Helvetica, sans-serif;
 }
 
@@ -132,6 +143,7 @@ main.container{
         flex-direction: column;
         align-items: center;
         border-top: 1px solid #aaa;
+        margin-top: 1rem;
         border-bottom: 1px solid #aaa;
         padding: 6px 0 0 0;
     }
@@ -244,15 +256,15 @@ main.container{
 
         &:hover{
             cursor: pointer;
-            background-color: rgb(129, 113, 20);
+            background-color: rgb(10, 106, 10);
         }
 
         &.active{
             cursor: pointer;
-            background-color: rgb(215, 188, 36);
+            background-color: rgb(25, 138, 25);
 
             &:hover{
-                background-color: rgb(215, 188, 36, 0.75);
+                background-color: rgb(30, 95, 30);
             }
         }
     }

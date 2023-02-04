@@ -1279,12 +1279,14 @@ const setFilter = (filterName) => {
       : 
         <>
         <div className={styles["menu-container"]}>
-          <h2 className={styles["title"]}>{`Where to Eat in ${place}`}</h2>
+          <h2 className={styles["title"]}>{`Where should we eat?`}</h2>
           <p className={styles["description"]}>
-            {`What parts of ${place} have the priciest menus?`}
-            {/* <a href='https://location.foursquare.com/developer/reference/place-search' target='blank' rel='norefferer'>{`Foursquare`}</a> */}
+            {`What parts of: `}
           </p>
-
+          <p className={styles["location"]}>{place}</p>
+          <p className={styles["description"]}>
+            {`have the priciest menus?`}
+          </p>
           <div className={styles["legend"]}>
             <div className={styles["chart-container"]}>
               <span  className={styles["legend-header"]}>
