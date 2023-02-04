@@ -15,7 +15,6 @@ import {
  } from '../utils/utils.js'
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 import * as turf from '@turf/turf';
-import MarketData from '../utils/geoJSON_market_data.json'
 import LoadingSpinner from '../components/Loading.tsx'
 import { BsInfoCircle, BsThreeDots } from 'react-icons/bs'
 import { FaBeer } from "react-icons/fa";
