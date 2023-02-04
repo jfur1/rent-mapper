@@ -46,7 +46,7 @@ const Map : NextPage = () => {
       var searchParams = {
         query: 'food',
         ll: center[1]+','+center[0],
-        radius: 10000,
+        radius: 11000,
         min_price:1,
         max_price:1,
         session_token: sessionToken,
@@ -151,7 +151,7 @@ const Map : NextPage = () => {
     console.log(`%c Center updated: ${center}! Fetching updated data...`, 'background: #111; color: aliceblue')
     setSelectedTab(null)
     setLoading(true)
-    if(map.current !== null){
+    if(typeof(map.current) !=='undefined' && map.current !== null){
       map.current.remove();
     }
 
@@ -200,8 +200,8 @@ const Map : NextPage = () => {
       
 
       // Initialize hexGrid
-      var bbox = boundingBox(center[0], center[1], 3);
-      const cellSide = 0.16;
+      var bbox = boundingBox(center[0], center[1], 4);
+      const cellSide = 0.14;
       const options = {};
       const hexGrid = turf.hexGrid(bbox, cellSide, options);
       // console.log(hexGrid);
@@ -257,7 +257,6 @@ const Map : NextPage = () => {
       }
   
       // console.log(turfPoints)
-      var max_pts = 0;
       var restaurantBins = [], barsBins=[], fastFoodBins=[], dessertBins=[], otherBins=[]
       var nonEmptyHexBins = []
       // Get point data (if any) that resides within the current polygon
@@ -293,9 +292,7 @@ const Map : NextPage = () => {
     
           // console.log('Point Counts: ', nPointsWithin, nPointsWithin1, nPointsWithin2, nPointsWithin3, nPointsWithin4)
           
-          if(nPointsWithin > 0 && nPointsWithin > max_pts)
-            max_pts = nPointsWithin;
-    
+          if(nPointsWithin > 0)
             // console.log('N Points within Polyon:', nPointsWithin)
             var avgPriceWithinFeature = ((nPointsWithin1) + (2 * nPointsWithin2) + (3 * nPointsWithin3) + (4 * nPointsWithin4)) / nPointsWithin;
             avgPriceWithinFeature = parseFloat(parseFloat(avgPriceWithinFeature).toFixed(2))
@@ -309,14 +306,16 @@ const Map : NextPage = () => {
             f.id = idx;
             const center_x = (f.geometry.coordinates[0][0][0] + f.geometry.coordinates[0][3][0]) / 2
             const center_y =(f.geometry.coordinates[0][0][1] + f.geometry.coordinates[0][3][1]) / 2
-    
+            const FILTERED_SCALING_FACTOR = 1000.0
+
             f.properties = { 
               x: center_x,
               y: center_y,
               coordinates: f.geometry.coordinates,
               avgPriceWithinFeature: avgPriceWithinFeature, 
               nPointsWithin: nPointsWithin,
-              height: avgPriceWithinFeature * 1000,
+              // height: avgPriceWithinFeature * 900,
+              height: Math.pow(nPointsWithin, 0.6) * FILTERED_SCALING_FACTOR,
               color: `rgb(${r}, ${g}, ${b})`,
               nRestaurantsWithinHex: nRestaurantsWithinHex,
               nBarsWithinHex: nBarsWithinHex, 
@@ -325,17 +324,58 @@ const Map : NextPage = () => {
               nOtherWithinHex: nOtherWithinHex
             };
             nonEmptyHexBins.push(f)
-
-            if(nRestaurantsWithinHex)
+            
+            if(nRestaurantsWithinHex){
+              f = {
+                ...f,
+                properties: {
+                  ...f.properties,
+                  height: Math.pow((2 * nRestaurantsWithinHex), 0.45) * FILTERED_SCALING_FACTOR
+                }
+              }
               restaurantBins.push(f)
-            if(nBarsWithinHex)
+            }
+            if(nBarsWithinHex){
+              f = {
+                ...f,
+                properties: {
+                  ...f.properties,
+                  height: Math.pow((2 * nBarsWithinHex), 0.4) * FILTERED_SCALING_FACTOR
+                }
+              }
+              console.log("Update height before pushing bin:", f)
               barsBins.push(f)
-            if(nFastFoodWithinHex)  
+            }
+            if(nFastFoodWithinHex){
+              f = {
+                ...f,
+                properties: {
+                  ...f.properties,
+                  height: Math.pow((2 * nFastFoodWithinHex), 0.4) * FILTERED_SCALING_FACTOR
+                }
+              }
               fastFoodBins.push(f)
-            if(nDessertsWithinHex)
+            }
+            if(nDessertsWithinHex){
+              f = {
+                ...f,
+                properties: {
+                  ...f.properties,
+                  height: Math.pow((2 * nDessertsWithinHex), 0.4) * FILTERED_SCALING_FACTOR
+                }
+              }
               dessertBins.push(f)
-            if(nOtherWithinHex)
+            }
+            if(nOtherWithinHex){
+              f = {
+                ...f,
+                properties: {
+                  ...f.properties,
+                  height: Math.pow((2 * nOtherWithinHex), 0.4) * FILTERED_SCALING_FACTOR
+                }
+              }
               otherBins.push(f)
+            }
 
           }
       });
@@ -803,7 +843,8 @@ const Map : NextPage = () => {
           popup._content.style.opacity='0.9'
         })
           
-        map.current.on('mouseleave', ['grid-extrusion', 'businesses-layer-1', 'businesses-layer-2','businesses-layer-3','businesses-layer-4', , 'grid-extrusion-restaurants','grid-extrusion-bars','grid-extrusion-fast-food','grid-extrusion-desserts','grid-extrusion-other'], (e) => {
+        map.current.on('mouseleave', ['grid-extrusion', 'businesses-layer-1', 'businesses-layer-2','businesses-layer-3','businesses-layer-4','businesses-layer-restaurants', 'businesses-layer-bars', 
+        'businesses-layer-fast-food','businesses-layer-desserts', 'businesses-layer-other', 'grid-extrusion-restaurants','grid-extrusion-bars','grid-extrusion-fast-food','grid-extrusion-desserts','grid-extrusion-other'], (e) => {
           map.current.getCanvas().style.cursor = '';
           map.current.removeFeatureState({ source: 'grid-extrusion' });
           map.current.removeFeatureState({ source: 'grid-extrusion-restaurants' });
@@ -861,7 +902,7 @@ const Map : NextPage = () => {
                   <div id='${styles['row']}'>
                     <div id='${styles["col"]}'>
                       <p id='${styles["average"]}'> ${avgPriceWithinFeature}  / 4 </p>
-                      <p id='${styles["desc"]}'>Average price</p>
+                      <p id='${styles["desc"]}'>Average prices</p>
                     </div>
                     <div id='${styles["col"]}'>
                       <p id='${styles["number"]}'>${
