@@ -4,7 +4,6 @@ main.container{
 
 .menu-container{
     min-width: 300px;
-    // max-width: 300px;
     width: 20vw;
     height: 100vh;
     background-color: rgb(39, 39, 39);
@@ -314,7 +313,7 @@ main.container{
 
 .zoomOut{
     position: absolute;
-    left: 20vw;
+    left: 20%;
     top: 4rem;
     margin-left: 10px;
     background-color: rgba(17, 17, 17, 0.236);
@@ -334,7 +333,13 @@ main.container{
     cursor: pointer;
 }
 
-@media  only screen and (max-device-width : 1024px) and (orientation: portrait){
+@media (min-device-width : 1024px){
+    .zoomOut{
+        left: 305px;
+    }
+}
+
+@media only screen and (max-device-width : 1024px) and (orientation: portrait){
     main.container{
         display: flex;
         flex-direction: column-reverse;
