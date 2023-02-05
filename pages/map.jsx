@@ -25,6 +25,7 @@ const Map = () => {
   const map = useRef(null);
   const INIT_X = -104.991531
   const INIT_Y = 39.742043
+  const INIT_ZOOM = 12.5
   let sessionToken = generateRandomSessionToken();
   const geoJsonStructure = {
     'type': 'FeatureCollection',
@@ -43,6 +44,7 @@ const Map = () => {
   const [place, setPlace] = useState("Denver, Colorado");
   const [maxCounts, setMaxCounts] = useState(null);
   const [moreInfoToggle, setMoreInfoToggle] = useState(false);
+  const [currentZoom, setCurrentZoom] = useState(12);
   
   const getData = async() => {
     try {
@@ -155,6 +157,7 @@ const Map = () => {
     console.log(`%c Center updated: ${center}! Fetching updated data...`, 'background: #111; color: aliceblue')
     setSelectedTab(null)
     setZoomed(false);
+    setCurrentZoom(INIT_ZOOM)
     setLoading(true);
     setMoreInfoToggle(false);
     if(typeof(map.current) !=='undefined' && map.current !== null){
@@ -178,7 +181,7 @@ const Map = () => {
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/dark-v11',
         center: [center[0], center[1]],
-        zoom: 12.5,
+        zoom: INIT_ZOOM,
         pitch: 45,
         bearing: 20,
         attributionControl: false
@@ -206,7 +209,7 @@ const Map = () => {
 
       // Initialize hexGrid
       var bbox = boundingBox(center[0], center[1], 4);
-      const cellSide = 0.14;
+      const cellSide = 0.12;
       const options = {};
       const hexGrid = turf.hexGrid(bbox, cellSide, options);
       // console.log(hexGrid);
@@ -984,6 +987,7 @@ const Map = () => {
           // console.log('filterOthers:',filterOthers)
 
           if (map.current.getZoom() > zoomThreshold ) {
+            setCurrentZoom(map.current.getZoom())
             // console.log('HIDING EXTRUSIONS', map.current.getSource('selected-area'))
             map.current.setLayoutProperty('grid-extrusion', 'visibility', 'none');
             map.current.setLayoutProperty('grid-extrusion-restaurants', 'visibility', 'none');
@@ -1221,6 +1225,7 @@ const setFilter = (filterName) => {
                       //respect to prefers-reduced-motion
     });
     setZoomed(false);
+    setCurrentZoom(INIT_ZOOM)
     setSelectedTab(null)
     if(typeof(map.current.getLayer('selected-hexagon')) !== 'undefined')
       map.current.removeLayer('selected-hexagon');
@@ -1237,6 +1242,14 @@ const setFilter = (filterName) => {
     3 : 'max_fast_food',
     4 : 'max_desserts',
     5 : 'max_other'
+  }
+
+  const filterIdNames = {
+    1 : 'Restaurants',
+    2 : 'Bars',
+    3 : 'Fast Food',
+    4 : 'Desserts',
+    5 : 'Others'
   }
 
   const heightForBar = (selectedTab, barIdx) =>{
@@ -1294,6 +1307,24 @@ const setFilter = (filterName) => {
                 ? <span className={styles['more-info']}>{`This graph shows the average price from businesses, per hexabin. Height is drawn from the average number of businesses, while the color cooresponds to average prices in the area.`} </span>
                 : null
               }
+              
+              {currentZoom > 14.5
+                ? 
+                  (!!selectedTab 
+                    ?
+                    <div className={styles['point-legend']} id={styles['filtered']}>
+                      <span id={styles['filter']} className={styles["point"]}></span>
+                      <p className={styles["filter-point-label"]}>{!!selectedTab ? filterIdNames[selectedTab] : "Filtered Point"}</p>
+                    </div>
+                  :
+                    <div className={styles['point-legend']}>
+                      <span id={styles['red']} className={styles["point"]}></span>
+                      <span id={styles['blue']} className={styles["point"]}></span>
+                      <span id={styles['green']} className={styles["point"]}></span>
+                      <span id={styles['orange']} className={styles["point"]}></span>
+                    </div>
+                    )
+                :
               <div className={styles["small-bar-chart"]}>
                   <div className={styles["small-bar-chart-bar-container"]}>
                       <div 
@@ -1324,16 +1355,26 @@ const setFilter = (filterName) => {
                       />
                   </div>
                 </div>
+              }
+
+              {!!selectedTab
+                ? null
+                :
                 <div className={styles["bar-chart-label"]}>
-                  <p className={styles['metric-left']}>1</p>
-                  <h4 className={styles["label-text"]}>{`Total Businesses`}</h4>
+                  <p className={styles['metric-left']}>{currentZoom > 14.5 ? '$' : 1}</p>
+                  <h4 className={styles["label-text"]}>{currentZoom > 14.5 ? "Prices" : 'Total Businesses'}</h4>
                   <p className={styles['metric-right']}>{
-                    !!maxCounts && allBusinesses.features.length > 0
-                      ?  (!!selectedTab ? maxCounts[legendDict[selectedTab]] : allBusinesses.features.length)
-                      : null
+                    currentZoom > 14.5
+                      ? "$$$$"
+                      : ((!!maxCounts && !!selectedTab) ? maxCounts[legendDict[selectedTab]] : allBusinesses.features.length)
                     }</p>
-                </div>
+                </div>}
+
+
               </div>
+              
+
+
             </div>
 
           <h4 className={styles['filters-title']}>Toggle Features</h4>

@@ -201,8 +201,8 @@ main.container{
     .bar-chart-label{
         // border: 1px solid #ddd;
         display: flex;
-        margin: 10px auto;
-        padding: 0 5px 0 7px;
+        margin: 0 auto 10px;
+        padding: 0 2px 0 7px;
         max-width: 200px;
         width: 100%;
         align-items: center;
@@ -265,6 +265,48 @@ main.container{
                 background-color: rgb(30, 95, 30);
             }
         }
+    }
+}
+
+.point-legend{
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    #filtered{
+        
+    }
+}
+
+.point{
+    border-radius: 50%;
+    border: 2px solid rgb(238, 238, 238);
+    margin: 7px 16px;
+
+    &#red{
+        height: 15px;
+        width: 15px;
+        background-color: red;
+    }
+    &#blue{
+        height: 22px;
+        width: 22px;
+        background-color: blue;
+    }
+    &#green{
+        height: 26px;
+        width: 26px;
+        background-color: green;
+    }
+    &#orange{
+        height: 30px;
+        width: 30px;
+        background-color: orange;
+    }
+    &#filter{
+        height: 18px;
+        width: 18px;
+        margin: 8px;
+        background-color: purple;
     }
 }
 
