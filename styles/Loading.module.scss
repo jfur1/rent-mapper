@@ -57,9 +57,46 @@
       }
   }
 
-  @media (max-device-width : 1024px){
+  /* Small screens */
+  @media (max-device-width: 280px){
+    .title{
+      width: 62%;
+    }
+  }
+  @media (min-device-width: 320px) and (max-device-width: 479px) {
     .title{
       width: 48%;
+    }
+  }
+
+  @media only screen and (min-device-width: 480px) and (max-device-width: 759px) and (orientation: portrait){
+    .title{
+      width: 35%;
+    }
+  }
+
+  /* iPads */
+  @media only screen and (min-device-width: 760px) and (max-device-width: 915px) and (orientation: portrait){
+    .title{
+      width: 25%;
+    }
+  }
+  @media only screen and (max-device-width: 1224px) and (orientation: landscape){
+    .title{
+      width: 20%;
+    }
+  }
+
+  @media only screen and (min-device-width: 1280px) and (orientation: landscape){
+    .title{
+      width: 20%;
+    }
+  }
+
+  // computers
+  @media (min-device-width: 1280px){
+    .title{
+      width: 12%;
     }
   }
 

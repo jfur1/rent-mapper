@@ -13,7 +13,7 @@ main.container{
 
 .title{
     text-align: left;
-    font-size: 40px;
+    font-size: clamp(30px, 32px, 40px);
     font-family: 'Amatic SC', cursive;
     margin-bottom: 0.5rem;
     font-weight: 300;
@@ -50,29 +50,6 @@ main.container{
     margin-right: 10px;
     font-size: medium;
     z-index: 5;
-}
-
-@media (max-device-width : 1024px){
-    main.container{
-        display: flex;
-        flex-direction: column-reverse;
-        align-items: center;
-        justify-content: center;
-        max-height: 100vh;
-    }
-    .menu-container{
-        width: 100vw;
-        overflow-y: auto;
-        height: 30vh;
-    }
-    .map-container{
-        height: 70vh;
-        width: 100vw;
-    }
-    .help{
-        margin-bottom: 31vh;
-        font-size: small;
-    }
 }
 
 .popup{
@@ -190,7 +167,7 @@ main.container{
             vertical-align: bottom;
             margin-bottom: 4px;
             height: 100px;
-            width: 55px;
+            // width: 55px;
 
             #small-bar-chart-bar- {
                 &1{
@@ -353,4 +330,32 @@ main.container{
 .zoomOut:hover{
     background-color: #555;
     cursor: pointer;
+}
+
+@media (max-device-width : 1024px){
+    main.container{
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        justify-content: center;
+        max-height: 100vh;
+    }
+    .menu-container{
+        width: 100vw;
+        overflow-y: auto;
+        height: 30vh;
+    }
+    .map-container{
+        height: 70vh;
+        width: 100vw;
+    }
+    .help{
+        margin-bottom: 31vh;
+        font-size: small;
+    }
+    .zoomOut{
+        left: 0;
+        font-size: large;
+        margin-top: 5px;
+    }
 }
