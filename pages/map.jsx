@@ -1079,6 +1079,10 @@ const Map = () => {
           }
         });
       });
+
+      map.current.on('idle', () => {
+        map.current.resize();
+      })
 }
 
 
