@@ -52,6 +52,29 @@ main.container{
     z-index: 5;
 }
 
+@media (max-device-width : 1024px){
+    main.container{
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        justify-content: center;
+        max-height: 100vh;
+    }
+    .menu-container{
+        width: 100vw;
+        overflow-y: auto;
+        height: 30vh;
+    }
+    .map-container{
+        height: 70vh;
+        width: 100vw;
+    }
+    .help{
+        margin-bottom: 31vh;
+        font-size: small;
+    }
+}
+
 .popup{
     #container{
         display: flex;

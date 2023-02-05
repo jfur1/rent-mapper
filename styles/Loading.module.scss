@@ -57,6 +57,12 @@
       }
   }
 
+  @media (max-device-width : 1024px){
+    .title{
+      width: 48%;
+    }
+  }
+
   .edge {
     background-color: #fff;
     box-shadow: inset 0px 0px 20px #eee;

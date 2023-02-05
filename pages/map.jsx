@@ -1284,7 +1284,6 @@ const setFilter = (filterName) => {
 
   return (
     <main className={styles["container"]}>
-      
       {loading ? <LoadingSpinner/>
       : 
         <>
