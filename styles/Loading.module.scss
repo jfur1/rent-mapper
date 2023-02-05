@@ -63,15 +63,15 @@
       width: 62%;
     }
   }
-  @media (min-device-width: 320px) and (max-device-width: 479px) {
+  @media (min-width: 320px) and (max-width: 760px) {
     .title{
-      width: 48%;
+      width: 38%;
     }
   }
 
-  @media only screen and (min-device-width: 480px) and (max-device-width: 759px) and (orientation: portrait){
+  @media only screen and (min-device-width: 375px) and (max-device-width: 759px) and (orientation: portrait){
     .title{
-      width: 35%;
+      width: 45%;
     }
   }
 
@@ -93,10 +93,16 @@
     }
   }
 
-  // computers
-  @media (min-device-width: 1280px){
+  @media (min-width: 760px) and (max-width: 1023px){
     .title{
-      width: 12%;
+      width: 22%;
+      transform: translate(-50%, -100%);
+    }
+  }
+
+  @media (min-width: 1024px){
+    .title{
+      width: 16%;
     }
   }
 
