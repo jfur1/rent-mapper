@@ -271,9 +271,10 @@ const Map = () => {
           return;
         } else{
           var turf_points = {
-            1 : '',
-            2 : '',
-            // TO DO : clean below
+            1 : turf.pointsWithinPolygon(turfPoints1, f),
+            2 : turf.pointsWithinPolygon(turfPoints2, f),
+            3 : turf.pointsWithinPolygon(turfPoints3, f),
+            4: turf.pointsWithinPolygon(turfPoints4, f),
           }
           var pointsWithin1 = turf.pointsWithinPolygon(turfPoints1, f)
           var pointsWithin2 = turf.pointsWithinPolygon(turfPoints2, f)
