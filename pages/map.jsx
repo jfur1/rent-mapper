@@ -270,6 +270,11 @@ const Map = () => {
           // console.log('skipping')
           return;
         } else{
+          var turf_points = {
+            1 : '',
+            2 : '',
+            // TO DO : clean below
+          }
           var pointsWithin1 = turf.pointsWithinPolygon(turfPoints1, f)
           var pointsWithin2 = turf.pointsWithinPolygon(turfPoints2, f)
           var pointsWithin3 = turf.pointsWithinPolygon(turfPoints3, f)
