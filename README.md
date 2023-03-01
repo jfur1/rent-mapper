@@ -1,13 +1,22 @@
 # Where Should We Eat?
 
-## Geospatial visulization of business prices grouped into hexbins. Taller bars coorespond to a densely populated hex cell. The opacity of an individual hex cell cooresponds to the average menu price in that area.
+Looking for a new place to eat? "Where Should We Eat?" can help! This web application uses the Mapbox and Foursquare APIs to generate a 3D hexgrid that displays the location and pricing information for nearby restaurants and other businesses.
 
-Sometimes the hardest question of all! This application is designed to help find and explore local businesses based on type of food or drink you're looking for.
+### Features
+* Interactive 3D hexgrid map generated using Mapbox API
+* Pricing information for nearby businesses retrieved using Foursquare API
+* User can filter businesses by type and view only the selected type
+* Height of each hexagon in the hexgrid corresponds to average pricing for businesses in that area
 
-### Sources:
-- Mapbox API for GeoCoding: https://www.mapbox.com/
-- Turf.js: https://turfjs.org/docs/#hexGrid
-- Foursquare API for businesses: https://location.foursquare.com/developer/reference/place-search
+### Usage
+1. Visit the [live site](https://visionary-lily-a0b23e.netlify.app/).
+2. Use the map to explore nearby businesses or search for a new location.
+3. Click on a hexagon to see more information about the businesses in that area.
+4. Use the filter to show only businesses of a specific type.
 
+### Dependencies
 
+This project is built with Next.js and requires no additional installations. The [Mapbox](https://www.mapbox.com/) and [Foursquare](https://location.foursquare.com/developer/) APIs are used to generate the map and retrieve pricing information, respectively.
 
+### License
+This project is licensed under the [MIT License](https://opensource.org/license/mit/).
