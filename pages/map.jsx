@@ -1,9 +1,15 @@
 import { useRef, useEffect, useState } from 'react'
 import Head from 'next/head'
-import styles from '../styles/Map.module.scss'
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
+import { BsInfoCircle, BsThreeDots } from 'react-icons/bs'
+import { FaBeer } from "react-icons/fa";
+import { GiCupcake } from "react-icons/gi";
+import { MdRoomService, MdFastfood } from "react-icons/md";
+import * as turf from '@turf/turf';
+
 import { 
   boundingBox, 
   randomIntFromInterval, 
@@ -12,13 +18,8 @@ import {
   geoJsonToPoints,
   categorizeBusinesses
  } from '../utils/utils.js'
-import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
-import * as turf from '@turf/turf';
+import styles from '../styles/Map.module.scss'
 import LoadingSpinner from '../components/Loading'
-import { BsInfoCircle, BsThreeDots } from 'react-icons/bs'
-import { FaBeer } from "react-icons/fa";
-import { GiCupcake } from "react-icons/gi";
-import { MdRoomService, MdFastfood } from "react-icons/md";
 
 const Map = () => {
   const mapContainer = useRef(null);
@@ -270,12 +271,12 @@ const Map = () => {
           // console.log('skipping')
           return;
         } else{
-          var turf_points = {
-            1 : turf.pointsWithinPolygon(turfPoints1, f),
-            2 : turf.pointsWithinPolygon(turfPoints2, f),
-            3 : turf.pointsWithinPolygon(turfPoints3, f),
-            4: turf.pointsWithinPolygon(turfPoints4, f),
-          }
+          // var turf_points = {
+          //   1 : turf.pointsWithinPolygon(turfPoints1, f),
+          //   2 : turf.pointsWithinPolygon(turfPoints2, f),
+          //   3 : turf.pointsWithinPolygon(turfPoints3, f),
+          //   4: turf.pointsWithinPolygon(turfPoints4, f),
+          // }
           var pointsWithin1 = turf.pointsWithinPolygon(turfPoints1, f)
           var pointsWithin2 = turf.pointsWithinPolygon(turfPoints2, f)
           var pointsWithin3 = turf.pointsWithinPolygon(turfPoints3, f)
