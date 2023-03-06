@@ -428,10 +428,10 @@ const Map = () => {
             'circle-color': 'red',
             'circle-stroke-color': 'white',
             'circle-stroke-opacity': {
-              stops: [[12.5, 0], [15, 1]]
+              stops: [[INIT_ZOOM, 0], [15, 1]]
             },
             'circle-opacity': {
-              stops: [[12.5, 0], [15, 1]]
+              stops: [[INIT_ZOOM, 0], [15, 1]]
             }
           }
         });
@@ -452,10 +452,10 @@ const Map = () => {
             'circle-color': 'blue',
             'circle-stroke-color': 'white',
             'circle-stroke-opacity': {
-              stops: [[12.5, 0], [15, 1]]
+              stops: [[INIT_ZOOM, 0], [15, 1]]
             },
             'circle-opacity': {
-              stops: [[12.5, 0], [15, 1]]
+              stops: [[INIT_ZOOM, 0], [15, 1]]
             }
           }
         });
@@ -476,10 +476,10 @@ const Map = () => {
             'circle-color': 'green',
             'circle-stroke-color': 'white',
             'circle-stroke-opacity': {
-              stops: [[12.5, 0], [15, 1]]
+              stops: [[INIT_ZOOM, 0], [15, 1]]
             },
             'circle-opacity': {
-              stops: [[12.5, 0], [15, 1]]
+              stops: [[INIT_ZOOM, 0], [15, 1]]
             }
           }
         });
@@ -500,10 +500,10 @@ const Map = () => {
               'circle-color': 'orange',
               'circle-stroke-color': 'white',
               'circle-stroke-opacity': {
-                stops: [[12.5, 0], [15, 1]]
+                stops: [[INIT_ZOOM, 0], [15, 1]]
               },
               'circle-opacity': {
-                stops: [[12.5, 0], [15, 1]]
+                stops: [[INIT_ZOOM, 0], [15, 1]]
               }
             }
         });
@@ -527,10 +527,10 @@ const Map = () => {
             'circle-color': 'purple',
             'circle-stroke-color': 'white',
             'circle-stroke-opacity': {
-              stops: [[12.5, 0], [15, 1]]
+              stops: [[INIT_ZOOM, 0], [15, 1]]
             },
             'circle-opacity': {
-              stops: [[12.5, 0], [15, 1]]
+              stops: [[INIT_ZOOM, 0], [15, 1]]
             }
           }
         });
@@ -554,10 +554,10 @@ const Map = () => {
             'circle-color': 'purple',
             'circle-stroke-color': 'white',
             'circle-stroke-opacity': {
-              stops: [[12.5, 0], [15, 1]]
+              stops: [[INIT_ZOOM, 0], [15, 1]]
             },
             'circle-opacity': {
-              stops: [[12.5, 0], [15, 1]]
+              stops: [[INIT_ZOOM, 0], [15, 1]]
             }
           }
         });
@@ -581,10 +581,10 @@ const Map = () => {
             'circle-color': 'purple',
             'circle-stroke-color': 'white',
             'circle-stroke-opacity': {
-              stops: [[12.5, 0], [15, 1]]
+              stops: [[INIT_ZOOM, 0], [15, 1]]
             },
             'circle-opacity': {
-              stops: [[12.5, 0], [15, 1]]
+              stops: [[INIT_ZOOM, 0], [15, 1]]
             }
           }
         });
@@ -608,10 +608,10 @@ const Map = () => {
             'circle-color': 'purple',
             'circle-stroke-color': 'white',
             'circle-stroke-opacity': {
-              stops: [[12.5, 0], [15, 1]]
+              stops: [[INIT_ZOOM, 0], [15, 1]]
             },
             'circle-opacity': {
-              stops: [[12.5, 0], [15, 1]]
+              stops: [[INIT_ZOOM, 0], [15, 1]]
             }
           }
         });
@@ -635,10 +635,10 @@ const Map = () => {
             'circle-color': 'purple',
             'circle-stroke-color': 'white',
             'circle-stroke-opacity': {
-              stops: [[12.5, 0], [15, 1]]
+              stops: [[INIT_ZOOM, 0], [15, 1]]
             },
             'circle-opacity': {
-              stops: [[12.5, 0], [15, 1]]
+              stops: [[INIT_ZOOM, 0], [15, 1]]
             }
           }
         });
@@ -1218,7 +1218,7 @@ const setFilter = (filterName) => {
     setFilter('init')
     const start = {
       center: center,
-      zoom: 12.5,
+      zoom: INIT_ZOOM,
       pitch: 45,
       bearing: 20,
     }
