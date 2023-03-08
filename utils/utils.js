@@ -121,6 +121,14 @@ export const geoJsonToPoints = (geojson) => {
 export const categorizeBusinesses = (businessesGeoJson) => {
     var points = []
 
+    const filters = {
+        "bars" : [],
+        "fastFood": [],
+        "desserts": [],
+        'restaurants': [],
+        'others': []
+    }
+
     var restaurantPoints = [], barPoints = [], fastFoodPoints = [], dessertsPoints = [], otherPoints = []
 
     for(var i=0; i < businessesGeoJson.features.length; i++){
