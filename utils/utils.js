@@ -122,11 +122,11 @@ export const categorizeBusinesses = (businessesGeoJson) => {
     var points = []
 
     const filters = {
-        "bars" : [],
-        "fastFood": [],
-        "desserts": [],
-        'restaurants': [],
-        'others': []
+        "bars" : ['bar','drinks','drinking'],
+        "fastFood": ['fast food', 'pizza', 'deli', 'diner'],
+        "desserts": ['donuts', 'bakery', 'ice cream'],
+        'restaurants': ['restaurant', 'steakhouse'],
+        'others': ['school', 'club', 'coffee']
     }
 
     var restaurantPoints = [], barPoints = [], fastFoodPoints = [], dessertsPoints = [], otherPoints = []
