@@ -268,15 +268,8 @@ const Map = () => {
         var pointsWithin = turf.pointsWithinPolygon(turfPoints, f)
         const nPointsWithin = pointsWithin.features.length;
         if(!nPointsWithin){
-          // console.log('skipping')
           return;
         } else{
-          // var turf_points = {
-          //   1 : turf.pointsWithinPolygon(turfPoints1, f),
-          //   2 : turf.pointsWithinPolygon(turfPoints2, f),
-          //   3 : turf.pointsWithinPolygon(turfPoints3, f),
-          //   4: turf.pointsWithinPolygon(turfPoints4, f),
-          // }
           var pointsWithin1 = turf.pointsWithinPolygon(turfPoints1, f)
           var pointsWithin2 = turf.pointsWithinPolygon(turfPoints2, f)
           var pointsWithin3 = turf.pointsWithinPolygon(turfPoints3, f)
