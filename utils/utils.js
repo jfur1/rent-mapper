@@ -134,7 +134,6 @@ export const categorizeBusinesses = (businessesGeoJson) => {
     for(var i=0; i < businessesGeoJson.features.length; i++){
         const categoryName=businessesGeoJson.features[i].properties.categories[0].name
         const category = categoryName.toLowerCase()
-        // console.log(businessesGeoJson.features[i])
         const location = businessesGeoJson.features[i].properties.location
         var point = {
             "type": "Feature",
@@ -144,7 +143,6 @@ export const categorizeBusinesses = (businessesGeoJson) => {
                 "coordinates" : businessesGeoJson.features[i].geometry.coordinates
             },
             "properties" : {
-                // ...businessesGeoJson.features[i].properties,
                 location: location,
                 businessType: categoryName,
                 name: businessesGeoJson.features[i].properties.name,
